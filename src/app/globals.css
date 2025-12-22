@@ -254,6 +254,23 @@ main {
   object-fit: cover;
 }
 
+.fact-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--cobalt-500) 15%, transparent), color-mix(in srgb, var(--mauve-500) 15%, transparent));
+  border-radius: 8px;
+  color: var(--cobalt-500);
+}
+
+.fact-icon svg {
+  width: 48px;
+  height: 48px;
+  stroke: currentColor;
+}
+
 .fact-text {
   line-height: 1.6;
 }

@@ -7,7 +7,11 @@ export async function GET(request: Request) {
   const query = searchParams.get('query') || 'brain neuron';
 
   if (!UNSPLASH_ACCESS_KEY) {
-    return NextResponse.json({ error: 'Unsplash API key not configured' }, { status: 500 });
+    return NextResponse.json({ 
+      url: null, 
+      useIcon: true,
+      error: 'Unsplash API key not configured' 
+    });
   }
 
   try {
@@ -40,10 +44,15 @@ export async function GET(request: Request) {
       url: image.urls.regular,
       alt: image.alt_description || query,
       credit: image.user.name,
+      useIcon: false,
     });
   } catch (error) {
     console.error('Error fetching image:', error);
-    return NextResponse.json({ url: null, error: 'Failed to fetch image' });
+    return NextResponse.json({ 
+      url: null, 
+      useIcon: true,
+      error: 'Failed to fetch image' 
+    });
   }
 }
 
