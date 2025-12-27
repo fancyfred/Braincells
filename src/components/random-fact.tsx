@@ -107,6 +107,26 @@ export function RandomFact({ className }: RandomFactProps) {
         voiceIndexRef.current = (voiceIndexRef.current + 1) % availableVoicesRef.current.length;
       }
 
+      // Set up Media Session API for background audio support
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: 'Fact Feed',
+          artist: 'Fact Me App',
+          artwork: []
+        });
+
+        // Set up media session actions
+        navigator.mediaSession.setActionHandler('play', () => {
+          // Resume if paused (though speech synthesis doesn't pause)
+        });
+        navigator.mediaSession.setActionHandler('pause', () => {
+          window.speechSynthesis.cancel();
+        });
+        navigator.mediaSession.setActionHandler('stop', () => {
+          window.speechSynthesis.cancel();
+        });
+      }
+
       utterance.onend = () => {
         resolve();
       };
@@ -136,6 +156,34 @@ export function RandomFact({ className }: RandomFactProps) {
     // Speak the fact with a different voice
     await speakText(factText, true);
   };
+
+  // Request wake lock to keep device awake during fact feed
+  useEffect(() => {
+    let wakeLock: WakeLockSentinel | null = null;
+
+    const requestWakeLock = async () => {
+      if ('wakeLock' in navigator && factFeedMode) {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock.addEventListener('release', () => {
+            console.log('Wake lock released');
+          });
+        } catch (err) {
+          console.log('Wake lock not supported or failed:', err);
+        }
+      }
+    };
+
+    if (factFeedMode) {
+      requestWakeLock();
+    }
+
+    return () => {
+      if (wakeLock) {
+        wakeLock.release().catch(() => {});
+      }
+    };
+  }, [factFeedMode]);
 
   useEffect(() => {
     // Initial fetch

@@ -93,6 +93,25 @@ export function FactList({ facts, selectedTag }: FactListProps) {
     utterance.pitch = 1.0; // Normal pitch
     utterance.volume = 1.0; // Full volume
 
+    // Set up Media Session API for background audio support
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: 'Fact',
+        artist: 'Fact Me App',
+        artwork: []
+      });
+
+      // Set up media session actions
+      navigator.mediaSession.setActionHandler('pause', () => {
+        window.speechSynthesis.cancel();
+        setSpeakingIndex(null);
+      });
+      navigator.mediaSession.setActionHandler('stop', () => {
+        window.speechSynthesis.cancel();
+        setSpeakingIndex(null);
+      });
+    }
+
     utterance.onstart = () => {
       setSpeakingIndex(index);
     };
