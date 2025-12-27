@@ -4,12 +4,12 @@ import { SiteLayout } from '@/components/layout';
 import { FactList } from '@/components/fact-list';
 import { FactFilter } from '@/components/fact-filter';
 import { LayoutSelector } from '@/components/layout-selector';
-import { braincellsFacts } from '@/data/braincells';
+import { spaceFacts } from '@/data/space';
 import { Fact } from '@/types/fact';
 
 export const metadata: Metadata = {
-  title: 'Brain Facts',
-  description: 'Fun facts about brain cells, neurons, and how your brain works.',
+  title: 'Space Facts',
+  description: 'Fascinating facts about space, planets, stars, black holes, astronauts, and the universe beyond Earth.',
 };
 
 export default async function Page({
@@ -19,10 +19,10 @@ export default async function Page({
 }) {
   const params = await Promise.resolve(searchParams);
   const selectedTag = params.tag || '';
-  const tags = Array.from(new Set(braincellsFacts.flatMap((fact) => fact.tags))).sort();
+  const tags = Array.from(new Set(spaceFacts.flatMap((fact) => fact.tags))).sort();
 
   if (!selectedTag && tags.length > 0) {
-    redirect(`/braincells?tag=${encodeURIComponent(tags[0])}`);
+    redirect(`/space?tag=${encodeURIComponent(tags[0])}`);
   }
 
   // Split tags into 4 quarters for surround layout
@@ -35,23 +35,23 @@ export default async function Page({
   return (
     <SiteLayout>
       <section className="shell">
-        <h1>Brain Facts</h1>
+        <h1>Space Facts</h1>
         <LayoutSelector />
         <div className="facts-layout">
           <aside className="facts-sidebar filter-left">
-            <FactFilter facts={braincellsFacts} selectedTag={selectedTag} tagsToShow={tagsLeft} />
+            <FactFilter facts={spaceFacts} selectedTag={selectedTag} tagsToShow={tagsLeft} />
           </aside>
           <aside className="facts-sidebar filter-right">
-            <FactFilter facts={braincellsFacts} selectedTag={selectedTag} tagsToShow={tagsRight} />
+            <FactFilter facts={spaceFacts} selectedTag={selectedTag} tagsToShow={tagsRight} />
           </aside>
           <aside className="facts-sidebar filter-top">
-            <FactFilter facts={braincellsFacts} selectedTag={selectedTag} tagsToShow={tagsTop} />
+            <FactFilter facts={spaceFacts} selectedTag={selectedTag} tagsToShow={tagsTop} />
           </aside>
           <main className="facts-content">
-            <FactList facts={braincellsFacts} selectedTag={selectedTag} />
+            <FactList facts={spaceFacts} selectedTag={selectedTag} />
           </main>
           <aside className="facts-sidebar filter-bottom">
-            <FactFilter facts={braincellsFacts} selectedTag={selectedTag} tagsToShow={tagsBottom} />
+            <FactFilter facts={spaceFacts} selectedTag={selectedTag} tagsToShow={tagsBottom} />
           </aside>
         </div>
       </section>

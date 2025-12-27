@@ -1,10 +1,20 @@
 import { NextResponse } from 'next/server';
 
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
+const UNSPLASH_DISABLED = true; // Global flag to disable Unsplash
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get('query') || 'brain neuron';
+
+  // Disable Unsplash globally
+  if (UNSPLASH_DISABLED) {
+    return NextResponse.json({ 
+      url: null, 
+      useIcon: true,
+      error: 'Unsplash disabled' 
+    });
+  }
 
   if (!UNSPLASH_ACCESS_KEY) {
     return NextResponse.json({ 

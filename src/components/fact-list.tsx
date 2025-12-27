@@ -19,6 +19,7 @@ interface FactListProps {
 export function FactList({ facts, selectedTag }: FactListProps) {
   const [factsWithImages, setFactsWithImages] = useState<FactWithImage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
 
   // Filter facts based on selected tag
   const filteredFacts = useMemo(() => {
@@ -59,6 +60,54 @@ export function FactList({ facts, selectedTag }: FactListProps) {
     setLoading(true);
     fetchImages();
   }, [filteredFacts]);
+
+  // Cleanup: stop speaking when component unmounts or facts change
+  useEffect(() => {
+    return () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [filteredFacts]);
+
+  const handleSpeak = (text: string, index: number) => {
+    // Stop any currently speaking
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+
+    // If clicking the same fact, stop speaking
+    if (speakingIndex === index) {
+      setSpeakingIndex(null);
+      return;
+    }
+
+    // Check if browser supports speech synthesis
+    if (!('speechSynthesis' in window)) {
+      alert('Text-to-speech is not supported in your browser.');
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0; // Normal speed
+    utterance.pitch = 1.0; // Normal pitch
+    utterance.volume = 1.0; // Full volume
+
+    utterance.onstart = () => {
+      setSpeakingIndex(index);
+    };
+
+    utterance.onend = () => {
+      setSpeakingIndex(null);
+    };
+
+    utterance.onerror = () => {
+      setSpeakingIndex(null);
+    };
+
+    window.speechSynthesis.speak(utterance);
+    setSpeakingIndex(index);
+  };
 
   if (loading) {
     return (
@@ -128,7 +177,43 @@ export function FactList({ facts, selectedTag }: FactListProps) {
               )}
             </div>
           )}
-          <div className="fact-text">{item.text}</div>
+          <div className="fact-content">
+            <div className="fact-text">{item.text}</div>
+            <button
+              className={`speak-button ${speakingIndex === index ? 'speaking' : ''}`}
+              onClick={() => handleSpeak(item.text, index)}
+              aria-label={speakingIndex === index ? 'Stop reading' : 'Read this fact aloud'}
+              title={speakingIndex === index ? 'Stop reading' : 'Read this fact aloud'}
+            >
+              {speakingIndex === index ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="6" y="4" width="4" height="16" />
+                  <rect x="14" y="4" width="4" height="16" />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+                </svg>
+              )}
+            </button>
+          </div>
         </li>
       ))}
     </ul>

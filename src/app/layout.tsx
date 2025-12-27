@@ -3,10 +3,10 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Braincells HQ',
-    template: '%s | Braincells HQ'
+    default: 'Fact Me App!',
+    template: '%s | Fact Me App!'
   },
-  description: 'One-stop brain cell hub: research, pioneering professors, and playful facts for every curious mind.',
+  description: 'Discover fascinating facts about the world around us. Playful enough for kids, deep enough for adults.',
   icons: {
     icon: '/icon.svg',
   },
