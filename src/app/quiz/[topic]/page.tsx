@@ -21,7 +21,6 @@ import { organsFacts } from '@/data/organs';
 import { planesFacts } from '@/data/planes';
 import { worldLeadersFacts } from '@/data/world-leaders';
 import { elementsFacts } from '@/data/elements';
-import { beachPartyGamesFacts } from '@/data/beach-party-games';
 import { philosophyFacts } from '@/data/philosophy';
 
 const topicData: Record<string, { facts: typeof braincellsFacts; title: string }> = {
@@ -44,7 +43,6 @@ const topicData: Record<string, { facts: typeof braincellsFacts; title: string }
   planes: { facts: planesFacts, title: 'Planes Facts' },
   'world-leaders': { facts: worldLeadersFacts, title: 'World Leaders Facts' },
   elements: { facts: elementsFacts, title: 'Elements Facts' },
-  'beach-party-games': { facts: beachPartyGamesFacts, title: 'Beach Party Games Facts' },
   philosophy: { facts: philosophyFacts, title: 'Philosophy Facts' },
 };
 
