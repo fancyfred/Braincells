@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
+import { UNSPLASH_DISABLED } from '@/config/images';
 
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
-const UNSPLASH_DISABLED = true; // Global flag to disable Unsplash
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

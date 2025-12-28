@@ -93,11 +93,13 @@ export function FactFilter({ facts, selectedTag, tagsToShow }: FactFilterProps) 
           </button>
         ))}
       </div>
-      {selectedTag && (
-        <div className="filter-info">
-          Showing {facts.filter((f) => f.tags.includes(selectedTag)).length} fact(s) tagged "{selectedTag}"
-        </div>
-      )}
+      <div className="filter-info">
+        {selectedTag ? (
+          <>Showing {facts.filter((f) => f.tags.includes(selectedTag)).length} fact(s) tagged "{selectedTag}"</>
+        ) : (
+          <>Showing all {facts.length} fact(s)</>
+        )}
+      </div>
     </div>
   );
 }

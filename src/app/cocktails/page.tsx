@@ -5,6 +5,7 @@ import { FactList } from '@/components/fact-list';
 import { FactFilter } from '@/components/fact-filter';
 import { LayoutSelector } from '@/components/layout-selector';
 import { cocktailsFacts } from '@/data/cocktails';
+import { UNSPLASH_DISABLED } from '@/config/images';
 
 export const metadata: Metadata = {
   title: 'Cocktails Facts',
@@ -20,7 +21,9 @@ export default async function Page({
   const selectedTag = params.tag || '';
   const tags = Array.from(new Set(cocktailsFacts.flatMap((fact) => fact.tags))).sort();
 
-  if (!selectedTag && tags.length > 0) {
+  // Only redirect to first tag if Unsplash is enabled (to avoid loading too many images)
+  // If Unsplash is disabled, allow showing all facts with no filter
+  if (!selectedTag && tags.length > 0 && !UNSPLASH_DISABLED) {
     redirect(`/cocktails?tag=${encodeURIComponent(tags[0])}`);
   }
 

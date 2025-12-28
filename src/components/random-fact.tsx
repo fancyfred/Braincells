@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { getTTSService, type TTSService } from '@/lib/tts-service';
 
 interface RandomFactProps {
   className?: string;
@@ -37,11 +38,14 @@ export function RandomFact({ className }: RandomFactProps) {
   const [fact, setFact] = useState<FactData | null>(null);
   const [loading, setLoading] = useState(true);
   const [factFeedMode, setFactFeedMode] = useState(false);
-  const speechSynthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const ttsServiceRef = useRef<TTSService | null>(null);
   const isProcessingRef = useRef<boolean>(false);
   const factFeedActiveRef = useRef<boolean>(false);
-  const voiceIndexRef = useRef<number>(0);
-  const availableVoicesRef = useRef<SpeechSynthesisVoice[]>([]);
+
+  // Initialize TTS service
+  useEffect(() => {
+    ttsServiceRef.current = getTTSService();
+  }, []);
 
   const fetchRandomFact = async () => {
     setLoading(true);
@@ -61,100 +65,69 @@ export function RandomFact({ className }: RandomFactProps) {
     }
   };
 
-  // Get available voices on component mount
+  // Set up Media Session API for background audio support
   useEffect(() => {
-    const loadVoices = () => {
-      if ('speechSynthesis' in window) {
-        const voices = window.speechSynthesis.getVoices();
-        // Filter to get a variety of English voices
-        const englishVoices = voices.filter(voice => 
-          voice.lang.startsWith('en') && !voice.localService
-        );
-        availableVoicesRef.current = englishVoices.length > 0 ? englishVoices : voices;
-      }
-    };
+    if (!factFeedMode || !('mediaSession' in navigator)) return;
 
-    loadVoices();
-    // Some browsers load voices asynchronously
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-    }
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: 'Fact Feed',
+      artist: 'Fact Me App',
+      artwork: []
+    });
+
+    navigator.mediaSession.setActionHandler('play', () => {
+      // Resume if paused
+    });
+
+    navigator.mediaSession.setActionHandler('pause', () => {
+      ttsServiceRef.current?.cancel();
+    });
+
+    navigator.mediaSession.setActionHandler('stop', () => {
+      ttsServiceRef.current?.cancel();
+    });
 
     return () => {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.onvoiceschanged = null;
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = null;
+        navigator.mediaSession.setActionHandler('play', null);
+        navigator.mediaSession.setActionHandler('pause', null);
+        navigator.mediaSession.setActionHandler('stop', null);
       }
     };
-  }, []);
+  }, [factFeedMode]);
 
-  const speakText = (text: string, useVoice: boolean = true): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      if (!('speechSynthesis' in window)) {
-        reject(new Error('Speech synthesis not supported'));
-        return;
-      }
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-      utterance.volume = 1.0;
-
-      // Use a different voice if available
-      if (useVoice && availableVoicesRef.current.length > 0) {
-        const voiceIndex = voiceIndexRef.current % availableVoicesRef.current.length;
-        utterance.voice = availableVoicesRef.current[voiceIndex];
-        // Increment for next time
-        voiceIndexRef.current = (voiceIndexRef.current + 1) % availableVoicesRef.current.length;
-      }
-
-      // Set up Media Session API for background audio support
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: 'Fact Feed',
-          artist: 'Fact Me App',
-          artwork: []
-        });
-
-        // Set up media session actions
-        navigator.mediaSession.setActionHandler('play', () => {
-          // Resume if paused (though speech synthesis doesn't pause)
-        });
-        navigator.mediaSession.setActionHandler('pause', () => {
-          window.speechSynthesis.cancel();
-        });
-        navigator.mediaSession.setActionHandler('stop', () => {
-          window.speechSynthesis.cancel();
-        });
-      }
-
-      utterance.onend = () => {
-        resolve();
-      };
-
-      utterance.onerror = (error) => {
-        reject(error);
-      };
-
-      window.speechSynthesis.speak(utterance);
-    });
+  const speakText = async (text: string): Promise<void> => {
+    if (!ttsServiceRef.current) {
+      console.error('[RandomFact] TTS service not initialized');
+      throw new Error('TTS service not initialized');
+    }
+    try {
+      console.log('[RandomFact] Speaking text:', text.substring(0, 50) + '...');
+      await ttsServiceRef.current.speak(text);
+      console.log('[RandomFact] Finished speaking');
+    } catch (error) {
+      console.error('[RandomFact] Error speaking text:', error);
+      throw error;
+    }
   };
 
   const speakFact = async (factText: string, topic: string): Promise<void> => {
     // Cancel any existing speech first
-    window.speechSynthesis.cancel();
+    ttsServiceRef.current?.cancel();
     
     // Get topic name
     const topicName = topicNames[topic] || 'various topics';
     const intro = `Here's a fact about ${topicName}.`;
     
     // Speak intro
-    await speakText(intro, true);
+    await speakText(intro);
     
-    // Small pause (built into speech synthesis, but add a tiny delay)
+    // Small pause between intro and fact
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Speak the fact with a different voice
-    await speakText(factText, true);
+    // Speak the fact (voice will be randomized automatically by the service)
+    await speakText(factText);
   };
 
   // Request wake lock to keep device awake during fact feed
@@ -265,17 +238,13 @@ export function RandomFact({ className }: RandomFactProps) {
   // Cleanup: stop speech when component unmounts or mode changes
   useEffect(() => {
     return () => {
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
+      ttsServiceRef.current?.cancel();
     };
   }, []);
 
   const toggleFactFeed = () => {
     // Stop any current speech
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
+    ttsServiceRef.current?.cancel();
     // Reset processing flag
     isProcessingRef.current = false;
     setFactFeedMode(!factFeedMode);
