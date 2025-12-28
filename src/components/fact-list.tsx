@@ -20,6 +20,26 @@ export function FactList({ facts, selectedTag }: FactListProps) {
   const [factsWithImages, setFactsWithImages] = useState<FactWithImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
+  const [imagesEnabled, setImagesEnabled] = useState(true);
+
+  // Load images enabled preference from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('images-enabled');
+    if (saved !== null) {
+      setImagesEnabled(saved === 'true');
+    }
+
+    // Listen for changes from ImageToggle
+    const handleImagesEnabledChange = (event: CustomEvent) => {
+      setImagesEnabled(event.detail.enabled);
+    };
+
+    window.addEventListener('images-enabled-changed', handleImagesEnabledChange as EventListener);
+
+    return () => {
+      window.removeEventListener('images-enabled-changed', handleImagesEnabledChange as EventListener);
+    };
+  }, []);
 
   // Filter facts based on selected tag
   const filteredFacts = useMemo(() => {
@@ -28,6 +48,19 @@ export function FactList({ facts, selectedTag }: FactListProps) {
   }, [facts, selectedTag]);
 
   useEffect(() => {
+    if (!imagesEnabled) {
+      // If images are disabled, just set facts without images
+      const factsWithoutImages = filteredFacts.map((fact) => ({
+        ...fact,
+        imageUrl: null,
+        imageAlt: '',
+        useIcon: true,
+      }));
+      setFactsWithImages(factsWithoutImages);
+      setLoading(false);
+      return;
+    }
+
     const fetchImages = async () => {
       const imagePromises = filteredFacts.map(async (fact) => {
         // Use tags first, then extract keywords from fact text for better variety
@@ -59,7 +92,7 @@ export function FactList({ facts, selectedTag }: FactListProps) {
 
     setLoading(true);
     fetchImages();
-  }, [filteredFacts]);
+  }, [filteredFacts, imagesEnabled]);
 
   // Cleanup: stop speaking when component unmounts or facts change
   useEffect(() => {
@@ -150,7 +183,7 @@ export function FactList({ facts, selectedTag }: FactListProps) {
     <ul className="fun-facts">
       {factsWithImages.map((item, index) => (
         <li key={`${item.text}-${index}`} className="fact-item">
-          {(item.imageUrl || item.useIcon) && (
+          {imagesEnabled && (item.imageUrl || item.useIcon) && (
             <div className="fact-image">
               {item.imageUrl ? (
                 <Image

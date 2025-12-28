@@ -19,6 +19,10 @@ import { carsFacts } from '@/data/cars';
 import { bibleFacts } from '@/data/bible';
 import { organsFacts } from '@/data/organs';
 import { planesFacts } from '@/data/planes';
+import { worldLeadersFacts } from '@/data/world-leaders';
+import { elementsFacts } from '@/data/elements';
+import { beachPartyGamesFacts } from '@/data/beach-party-games';
+import { philosophyFacts } from '@/data/philosophy';
 
 const topicData: Record<string, { facts: typeof braincellsFacts; title: string }> = {
   braincells: { facts: braincellsFacts, title: 'Brain Facts' },
@@ -38,6 +42,10 @@ const topicData: Record<string, { facts: typeof braincellsFacts; title: string }
   bible: { facts: bibleFacts, title: 'The Bible Facts' },
   organs: { facts: organsFacts, title: 'Organs Facts' },
   planes: { facts: planesFacts, title: 'Planes Facts' },
+  'world-leaders': { facts: worldLeadersFacts, title: 'World Leaders Facts' },
+  elements: { facts: elementsFacts, title: 'Elements Facts' },
+  'beach-party-games': { facts: beachPartyGamesFacts, title: 'Beach Party Games Facts' },
+  philosophy: { facts: philosophyFacts, title: 'Philosophy Facts' },
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ topic: string }> }): Promise<Metadata> {

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ThemeToggle } from './theme-toggle';
+import { ImageToggle } from './image-toggle';
 import { RandomFact } from './random-fact';
 import { QuizMeButton } from './quiz-me-button';
 
@@ -11,6 +12,7 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
           <div className="tagline">Fact Me App!</div>
         </Link>
         <RandomFact className="nav-random-fact" />
+        <ImageToggle />
         <ThemeToggle />
       </nav>
       <main>{children}</main>

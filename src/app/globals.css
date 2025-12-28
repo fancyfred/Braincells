@@ -112,6 +112,7 @@ main {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
@@ -249,6 +250,38 @@ main {
 .btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 30px rgba(155, 107, 255, 0.2);
+}
+
+.image-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease;
+  font-size: 0.85rem;
+}
+
+.image-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 30px rgba(155, 107, 255, 0.2);
+  background: color-mix(in srgb, var(--cobalt-500) 10%, transparent);
+  border-color: var(--cobalt-500);
+}
+
+.image-toggle svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.5;
+}
+
+.image-toggle-label {
+  white-space: nowrap;
 }
 
 .grid {
@@ -404,6 +437,83 @@ main {
   50% {
     opacity: 0.7;
   }
+}
+
+/* Mood selector */
+.mood-selector {
+  margin-bottom: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: color-mix(in srgb, var(--card) 90%, transparent);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+}
+
+.mood-selector-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.mood-label {
+  font-weight: 600;
+  color: var(--fg);
+  font-size: 1rem;
+}
+
+.mood-subtitle {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.mood-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.mood-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--fg);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 120ms ease;
+  text-align: left;
+}
+
+.mood-button:hover {
+  background: color-mix(in srgb, var(--mauve-500) 10%, transparent);
+  border-color: color-mix(in srgb, var(--mauve-500) 30%, transparent);
+  transform: translateY(-1px);
+}
+
+.mood-button.active {
+  background: linear-gradient(135deg, var(--cobalt-500), var(--mauve-500));
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(60, 102, 255, 0.3);
+}
+
+.mood-button-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.mood-button-description {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  line-height: 1.3;
+}
+
+.mood-button.active .mood-button-description {
+  opacity: 0.95;
 }
 
 /* Layout selector */
@@ -569,63 +679,53 @@ main {
 }
 
 
-/* Surround layout - facts in center with filters around */
-.layout-surround .facts-layout {
-  display: grid;
-  grid-template-columns: 220px 1fr 220px;
-  grid-template-rows: auto 1fr auto;
-  gap: 1rem;
+/* Responsive: Hide left/right on mobile, hide top/bottom on desktop */
+@media (max-width: 767px) {
+  /* Hide left/right layouts on mobile */
+  .layout-left .facts-sidebar.filter-left,
+  .layout-right .facts-sidebar.filter-right {
+    display: none;
+  }
+  
+  /* On mobile, show top layout instead */
+  .layout-left .facts-layout,
+  .layout-right .facts-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .layout-left .facts-sidebar.filter-top,
+  .layout-right .facts-sidebar.filter-top {
+    display: block;
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+    padding: 0;
+  }
 }
 
-.layout-surround .facts-sidebar {
-  display: block;
-}
-
-.layout-surround .facts-sidebar.filter-left {
-  grid-column: 1;
-  grid-row: 1 / -1;
-  position: sticky;
-  top: 1rem;
-  align-self: start;
-  max-height: calc(100vh - 2rem);
-  overflow-y: auto;
-  padding-right: 0.5rem;
-}
-
-.layout-surround .facts-content {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-.layout-surround .facts-sidebar.filter-right {
-  grid-column: 3;
-  grid-row: 1 / -1;
-  position: sticky;
-  top: 1rem;
-  align-self: start;
-  max-height: calc(100vh - 2rem);
-  overflow-y: auto;
-  padding-left: 0.5rem;
-}
-
-.layout-surround .facts-sidebar.filter-top {
-  grid-column: 2;
-  grid-row: 1;
-  position: static;
-  max-height: none;
-  overflow-y: visible;
-  padding: 0;
-  margin-bottom: 0;
-}
-
-.layout-surround .facts-sidebar.filter-bottom {
-  grid-column: 2;
-  grid-row: 3;
-  position: static;
-  max-height: none;
-  overflow-y: visible;
-  padding: 0;
-  margin-top: 0;
+@media (min-width: 768px) {
+  /* Hide top/bottom layouts on desktop */
+  .layout-top .facts-sidebar.filter-top,
+  .layout-bottom .facts-sidebar.filter-bottom {
+    display: none;
+  }
+  
+  /* On desktop, show left layout instead */
+  .layout-top .facts-layout,
+  .layout-bottom .facts-layout {
+    grid-template-columns: 280px 1fr;
+  }
+  
+  .layout-top .facts-sidebar.filter-left,
+  .layout-bottom .facts-sidebar.filter-left {
+    display: block;
+    position: sticky;
+    top: 1rem;
+    align-self: start;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
 }
 
 /* Scrollbar styling for sidebars */
@@ -788,10 +888,47 @@ main {
   margin-bottom: 1rem;
 }
 
+.topic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
 .topic-card h2 {
-  margin: 0 0 0.75rem;
+  margin: 0;
   font-size: 1.5rem;
   color: var(--fg);
+  flex: 1;
+}
+
+.topic-mood-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.topic-mood-badge.mood-general {
+  background: color-mix(in srgb, var(--cobalt-500) 15%, transparent);
+  color: var(--cobalt-500);
+}
+
+.topic-mood-badge.mood-niche {
+  background: color-mix(in srgb, var(--mauve-500) 15%, transparent);
+  color: var(--mauve-500);
+}
+
+.topic-mood-badge.mood-obscure {
+  background: color-mix(in srgb, #9b6bff 20%, transparent);
+  color: #9b6bff;
+  opacity: 0.9;
 }
 
 .topic-card p {

@@ -2,29 +2,56 @@
 
 import { useState, useEffect } from 'react';
 
-export type LayoutOption = 'left' | 'right' | 'top' | 'bottom' | 'surround';
+export type LayoutOption = 'left' | 'right' | 'top' | 'bottom';
 
 export function LayoutSelector() {
   const [layout, setLayout] = useState<LayoutOption>('left');
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    
+    // Check if mobile on mount
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    
+    // Listen for resize
+    window.addEventListener('resize', checkMobile);
+    
     // Load saved preference from localStorage
     const saved = localStorage.getItem('fact-layout') as LayoutOption;
-    const initialLayout = (saved && ['left', 'right', 'top', 'bottom', 'surround'].includes(saved)) 
+    const validOptions: LayoutOption[] = ['left', 'right', 'top', 'bottom'];
+    const initialLayout = (saved && validOptions.includes(saved)) 
       ? saved 
       : 'left';
-    setLayout(initialLayout);
+    
+    // If saved layout is not appropriate for current screen size, use default
+    const isMobileNow = window.innerWidth < 768;
+    const mobileOptions: LayoutOption[] = ['top', 'bottom'];
+    const desktopOptions: LayoutOption[] = ['left', 'right'];
+    
+    let finalLayout = initialLayout;
+    if (isMobileNow && !mobileOptions.includes(initialLayout)) {
+      finalLayout = 'top';
+    } else if (!isMobileNow && !desktopOptions.includes(initialLayout)) {
+      finalLayout = 'left';
+    }
+    
+    setLayout(finalLayout);
     // Apply layout immediately
-    applyLayout(initialLayout);
+    applyLayout(finalLayout);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const applyLayout = (newLayout: LayoutOption) => {
     // Remove all layout classes
     const shell = document.querySelector('section.shell');
     if (shell) {
-      shell.classList.remove('layout-left', 'layout-right', 'layout-top', 'layout-bottom', 'layout-surround');
+      shell.classList.remove('layout-left', 'layout-right', 'layout-top', 'layout-bottom');
       shell.classList.add(`layout-${newLayout}`);
     }
   };
@@ -37,13 +64,19 @@ export function LayoutSelector() {
     applyLayout(newLayout);
   };
 
-  const layouts = [
-    { value: 'left' as LayoutOption, label: 'Left', icon: '⬅️' },
-    { value: 'right' as LayoutOption, label: 'Right', icon: '➡️' },
-    { value: 'top' as LayoutOption, label: 'Top', icon: '⬆️' },
-    { value: 'bottom' as LayoutOption, label: 'Bottom', icon: '⬇️' },
-    { value: 'surround' as LayoutOption, label: 'Surround', icon: '🔲' },
+  // Desktop options (left/right) - shown on wide screens
+  const desktopLayouts: Array<{ value: LayoutOption; label: string; icon: string }> = [
+    { value: 'left', label: 'Left', icon: '⬅️' },
+    { value: 'right', label: 'Right', icon: '➡️' },
   ];
+
+  // Mobile options (top/bottom) - shown on mobile screens
+  const mobileLayouts: Array<{ value: LayoutOption; label: string; icon: string }> = [
+    { value: 'top', label: 'Top', icon: '⬆️' },
+    { value: 'bottom', label: 'Bottom', icon: '⬇️' },
+  ];
+
+  const layouts = isMobile ? mobileLayouts : desktopLayouts;
 
   return (
     <div className="layout-selector">
