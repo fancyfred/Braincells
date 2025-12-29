@@ -122,13 +122,29 @@ export function RandomFact({ className }: RandomFactProps) {
     
     // Get topic name
     const topicName = topicNames[topic] || 'various topics';
-    const intro = `Here's a fact about ${topicName}.`;
+    
+    // Random intro sentence variations
+    const introVariations = [
+      `Here's a fact about ${topicName}.`,
+      `Did you know this about ${topicName}?`,
+      `Here's something interesting about ${topicName}.`,
+      `Let's learn about ${topicName}.`,
+      `Here's a ${topicName} fact.`,
+      `Time for a ${topicName} fact.`,
+      `Here's something about ${topicName}.`,
+      `A quick fact about ${topicName}.`,
+      `Here's what you should know about ${topicName}.`,
+      `Interesting fact about ${topicName}.`,
+    ];
+    
+    // Pick a random intro
+    const intro = introVariations[Math.floor(Math.random() * introVariations.length)];
     
     // Speak intro
     await speakText(intro);
     
-    // Small pause between intro and fact
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Reduced pause between intro and fact (from 500ms to 250ms)
+    await new Promise(resolve => setTimeout(resolve, 250));
     
     // Speak the fact (voice will be randomized automatically by the service)
     await speakText(factText);
@@ -241,8 +257,8 @@ export function RandomFact({ className }: RandomFactProps) {
           return;
         }
         
-        // Wait 5 seconds after speech ends
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        // Reduced wait time between facts (from 5 seconds to 2.5 seconds)
+        await new Promise(resolve => setTimeout(resolve, 2500));
         
         // Final check before fetching next fact
         if (!factFeedActiveRef.current) {
@@ -261,7 +277,7 @@ export function RandomFact({ className }: RandomFactProps) {
         
         // Even on error, wait and try to continue if mode is still active
         if (factFeedActiveRef.current) {
-          await new Promise(resolve => setTimeout(resolve, 5000));
+          await new Promise(resolve => setTimeout(resolve, 2500));
           if (factFeedActiveRef.current) {
             await fetchRandomFact();
           }
