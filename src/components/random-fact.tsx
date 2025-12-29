@@ -35,6 +35,7 @@ const topicNames: Record<string, string> = {
   'world-leaders': 'world leaders',
   'elements': 'chemical elements',
   'philosophy': 'philosophy',
+  'seinfeld': 'Seinfeld',
 };
 
 export function RandomFact({ className }: RandomFactProps) {
@@ -136,28 +137,61 @@ export function RandomFact({ className }: RandomFactProps) {
   // Request wake lock to keep device awake during fact feed
   useEffect(() => {
     let wakeLock: WakeLockSentinel | null = null;
+    let wakeLockRetryInterval: NodeJS.Timeout | null = null;
 
     const requestWakeLock = async () => {
       if ('wakeLock' in navigator && factFeedMode) {
         try {
           wakeLock = await navigator.wakeLock.request('screen');
+          console.log('[RandomFact] Wake lock acquired');
+          
+          // Re-request wake lock if it gets released (e.g., user switches tabs)
           wakeLock.addEventListener('release', () => {
-            console.log('Wake lock released');
+            console.log('[RandomFact] Wake lock released, attempting to re-acquire...');
+            if (factFeedMode) {
+              requestWakeLock();
+            }
           });
         } catch (err) {
-          console.log('Wake lock not supported or failed:', err);
+          console.log('[RandomFact] Wake lock not supported or failed:', err);
+        }
+      }
+    };
+
+    // Periodically re-request wake lock to ensure it stays active
+    const maintainWakeLock = () => {
+      if (factFeedMode && 'wakeLock' in navigator) {
+        // Check if wake lock is still active
+        if (!wakeLock || wakeLock.released) {
+          requestWakeLock();
         }
       }
     };
 
     if (factFeedMode) {
       requestWakeLock();
+      // Re-check every 30 seconds to ensure wake lock is still active
+      wakeLockRetryInterval = setInterval(maintainWakeLock, 30000);
     }
 
+    // Handle visibility changes to re-request wake lock
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible' && factFeedMode && 'wakeLock' in navigator) {
+        if (!wakeLock || wakeLock.released) {
+          await requestWakeLock();
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     return () => {
+      if (wakeLockRetryInterval) {
+        clearInterval(wakeLockRetryInterval);
+      }
       if (wakeLock) {
         wakeLock.release().catch(() => {});
       }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [factFeedMode]);
 

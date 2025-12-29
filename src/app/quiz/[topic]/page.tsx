@@ -22,6 +22,7 @@ import { planesFacts } from '@/data/planes';
 import { worldLeadersFacts } from '@/data/world-leaders';
 import { elementsFacts } from '@/data/elements';
 import { philosophyFacts } from '@/data/philosophy';
+import { seinfeldFacts } from '@/data/seinfeld';
 
 const topicData: Record<string, { facts: typeof braincellsFacts; title: string }> = {
   braincells: { facts: braincellsFacts, title: 'Brain Facts' },
@@ -44,6 +45,7 @@ const topicData: Record<string, { facts: typeof braincellsFacts; title: string }
   'world-leaders': { facts: worldLeadersFacts, title: 'World Leaders Facts' },
   elements: { facts: elementsFacts, title: 'Elements Facts' },
   philosophy: { facts: philosophyFacts, title: 'Philosophy Facts' },
+  seinfeld: { facts: seinfeldFacts, title: 'Seinfeld Facts' },
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ topic: string }> }): Promise<Metadata> {

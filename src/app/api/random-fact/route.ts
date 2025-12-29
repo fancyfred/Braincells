@@ -19,6 +19,7 @@ import { planesFacts } from '@/data/planes';
 import { worldLeadersFacts } from '@/data/world-leaders';
 import { elementsFacts } from '@/data/elements';
 import { philosophyFacts } from '@/data/philosophy';
+import { seinfeldFacts } from '@/data/seinfeld';
 import { Fact } from '@/types/fact';
 
 // Combine all facts with their topic information
@@ -48,6 +49,7 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...worldLeadersFacts.map(f => ({ fact: f, topic: 'world-leaders' })),
   ...elementsFacts.map(f => ({ fact: f, topic: 'elements' })),
   ...philosophyFacts.map(f => ({ fact: f, topic: 'philosophy' })),
+  ...seinfeldFacts.map(f => ({ fact: f, topic: 'seinfeld' })),
 ];
 
 export async function GET(request: Request) {

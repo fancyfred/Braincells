@@ -159,6 +159,9 @@ class PuterTTSService implements TTSService {
 
         this.currentAudio = audio;
 
+        // Preload the audio to ensure it's ready
+        audio.preload = 'auto';
+        
         // Set up Media Session API for background audio support
         if ('mediaSession' in navigator) {
           navigator.mediaSession.metadata = new MediaMetadata({
@@ -166,15 +169,65 @@ class PuterTTSService implements TTSService {
             artist: 'Fact Me App',
             album: 'Fact Feed',
           });
+
+          // Set up action handlers to prevent accidental pauses
+          navigator.mediaSession.setActionHandler('play', async () => {
+            if (audio.paused) {
+              try {
+                await audio.play();
+                console.log('[PuterTTS] Audio resumed via media session');
+              } catch (e) {
+                console.error('[PuterTTS] Failed to resume audio:', e);
+              }
+            }
+          });
+
+          navigator.mediaSession.setActionHandler('pause', () => {
+            // Don't pause - keep playing
+            console.log('[PuterTTS] Pause requested but ignored for continuous playback');
+          });
         }
 
-        // Add event listeners for debugging
+        // Add event listeners for debugging and recovery
         audio.onloadstart = () => console.log('[PuterTTS] Audio loading started');
         audio.oncanplay = () => console.log('[PuterTTS] Audio can play');
         audio.onplay = () => console.log('[PuterTTS] Audio playing');
-        audio.onpause = () => console.log('[PuterTTS] Audio paused');
+        
+        // Handle unexpected pauses (browser suspending audio)
+        audio.onpause = () => {
+          console.log('[PuterTTS] Audio paused unexpectedly');
+          // Try to resume if it was paused by the browser (not user)
+          if (document.visibilityState === 'hidden' || document.hidden) {
+            // If page is in background, try to resume after a short delay
+            setTimeout(async () => {
+              if (audio.paused && this.currentAudio === audio) {
+                try {
+                  await audio.play();
+                  console.log('[PuterTTS] Audio resumed after unexpected pause');
+                } catch (e) {
+                  console.error('[PuterTTS] Failed to resume after pause:', e);
+                }
+              }
+            }, 100);
+          }
+        };
+
+        // Monitor for visibility changes to keep audio playing
+        const handleVisibilityChange = async () => {
+          if (document.visibilityState === 'hidden' && audio.paused && this.currentAudio === audio) {
+            try {
+              await audio.play();
+              console.log('[PuterTTS] Audio resumed after visibility change');
+            } catch (e) {
+              console.error('[PuterTTS] Failed to resume after visibility change:', e);
+            }
+          }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
         audio.onended = () => {
           console.log('[PuterTTS] Audio ended');
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
           this.currentAudio = null;
           resolve();
         };
@@ -186,6 +239,7 @@ class PuterTTSService implements TTSService {
             networkState: audio.networkState,
             readyState: audio.readyState,
           });
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
           this.currentAudio = null;
           reject(new Error(`Audio playback failed: ${audio.error?.message || 'Unknown error'}`));
         };
@@ -195,6 +249,23 @@ class PuterTTSService implements TTSService {
         try {
           await audio.play();
           console.log('[PuterTTS] Audio play() succeeded');
+          
+          // Keep audio playing even if page goes to background
+          // Set up a periodic check to ensure audio is still playing
+          const keepAliveInterval = setInterval(() => {
+            if (this.currentAudio === audio && audio.paused && !audio.ended) {
+              console.log('[PuterTTS] Audio paused, attempting to resume...');
+              audio.play().catch((e) => {
+                console.error('[PuterTTS] Failed to resume in keep-alive:', e);
+                clearInterval(keepAliveInterval);
+              });
+            } else if (audio.ended || this.currentAudio !== audio) {
+              clearInterval(keepAliveInterval);
+            }
+          }, 2000); // Check every 2 seconds
+
+          // Clean up interval when audio ends
+          audio.addEventListener('ended', () => clearInterval(keepAliveInterval), { once: true });
         } catch (playError: any) {
           console.error('[PuterTTS] Audio play() failed:', playError);
           // If autoplay is blocked, try to handle it

@@ -149,5 +149,12 @@ export const topics: Topic[] = [
     emoji: '🤔',
     mood: 'general',
   },
+  {
+    slug: 'seinfeld',
+    title: 'Seinfeld Facts',
+    description: 'Fascinating facts about Seinfeld, the iconic sitcom, its characters, episodes, and behind-the-scenes stories.',
+    emoji: '📺',
+    mood: 'obscure',
+  },
 ];
 
