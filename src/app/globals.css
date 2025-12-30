@@ -439,6 +439,61 @@ main {
   }
 }
 
+/* Fact Navigation */
+.fact-navigation-container {
+  position: relative;
+}
+
+.fact-navigation-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.fact-nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--card) 90%, transparent);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--fg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.fact-nav-button:hover:not(.disabled) {
+  background: color-mix(in srgb, var(--cobalt-500) 10%, transparent);
+  border-color: var(--cobalt-500);
+  color: var(--cobalt-500);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(60, 102, 255, 0.2);
+}
+
+.fact-nav-button.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.fact-nav-button svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+}
+
+.fact-single-view {
+  display: block;
+}
+
+.fact-single-view li {
+  margin: 0;
+}
+
 /* Mood selector */
 .mood-selector {
   margin-bottom: 2rem;

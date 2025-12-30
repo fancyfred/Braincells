@@ -23,6 +23,16 @@ import { worldLeadersFacts } from '@/data/world-leaders';
 import { elementsFacts } from '@/data/elements';
 import { philosophyFacts } from '@/data/philosophy';
 import { seinfeldFacts } from '@/data/seinfeld';
+import { olympicsFacts } from '@/data/olympics';
+import { internetFacts } from '@/data/internet';
+import { octopiFacts } from '@/data/octopi';
+import { snakesFacts } from '@/data/snakes';
+import { sharksFacts } from '@/data/sharks';
+import { oceansFacts } from '@/data/oceans';
+import { mountainsFacts } from '@/data/mountains';
+import { ancientEgyptFacts } from '@/data/ancient-egypt';
+import { chocolateFacts } from '@/data/chocolate';
+import { spicesFacts } from '@/data/spices';
 
 const topicData: Record<string, { facts: typeof braincellsFacts; title: string }> = {
   braincells: { facts: braincellsFacts, title: 'Brain Facts' },
@@ -46,6 +56,16 @@ const topicData: Record<string, { facts: typeof braincellsFacts; title: string }
   elements: { facts: elementsFacts, title: 'Elements Facts' },
   philosophy: { facts: philosophyFacts, title: 'Philosophy Facts' },
   seinfeld: { facts: seinfeldFacts, title: 'Seinfeld Facts' },
+  olympics: { facts: olympicsFacts, title: 'Olympics Facts' },
+  internet: { facts: internetFacts, title: 'The Internet Facts' },
+  octopi: { facts: octopiFacts, title: 'Octopus Facts' },
+  snakes: { facts: snakesFacts, title: 'Snakes Facts' },
+  sharks: { facts: sharksFacts, title: 'Sharks Facts' },
+  oceans: { facts: oceansFacts, title: 'Oceans Facts' },
+  mountains: { facts: mountainsFacts, title: 'Mountains Facts' },
+  'ancient-egypt': { facts: ancientEgyptFacts, title: 'Ancient Egypt Facts' },
+  chocolate: { facts: chocolateFacts, title: 'Chocolate Facts' },
+  spices: { facts: spicesFacts, title: 'Spices Facts' },
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ topic: string }> }): Promise<Metadata> {

@@ -45,7 +45,7 @@ export function FactFilter({ facts, selectedTag }: FactFilterProps) {
   return (
     <div className="fact-filter">
       <div className="filter-header">
-        <span className="filter-label">Filter by tag:</span>
+        <span className="filter-label">Filter by subtopic:</span>
         {selectedTag && (
           <button onClick={clearFilter} className="clear-filter">
             Clear filter
@@ -65,7 +65,7 @@ export function FactFilter({ facts, selectedTag }: FactFilterProps) {
       </div>
       <div className="filter-info">
         {selectedTag ? (
-          <>Showing {facts.filter((f) => f.tags.includes(selectedTag)).length} fact(s) tagged "{selectedTag}"</>
+          <>Showing {facts.filter((f) => f.tags.includes(selectedTag)).length} fact(s) in "{selectedTag}"</>
         ) : (
           <>Showing all {facts.length} fact(s)</>
         )}

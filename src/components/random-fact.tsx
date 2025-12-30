@@ -36,6 +36,16 @@ const topicNames: Record<string, string> = {
   'elements': 'chemical elements',
   'philosophy': 'philosophy',
   'seinfeld': 'Seinfeld',
+  'olympics': 'the Olympics',
+  'internet': 'the internet',
+  'octopi': 'octopuses',
+  'snakes': 'snakes',
+  'sharks': 'sharks',
+  'oceans': 'the oceans',
+  'mountains': 'mountains',
+  'ancient-egypt': 'ancient Egypt',
+  'chocolate': 'chocolate',
+  'spices': 'spices',
 };
 
 export function RandomFact({ className }: RandomFactProps) {

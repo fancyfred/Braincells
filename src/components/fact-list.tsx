@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import nlp from 'compromise';
 import { Fact } from '@/types/fact';
@@ -17,10 +18,19 @@ interface FactListProps {
 }
 
 export function FactList({ facts, selectedTag }: FactListProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  
   const [factsWithImages, setFactsWithImages] = useState<FactWithImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
   const [imagesEnabled, setImagesEnabled] = useState(true);
+  
+  // Navigation state: history of tags and current position
+  const [tagHistory, setTagHistory] = useState<string[]>([]);
+  const [currentHistoryIndex, setCurrentHistoryIndex] = useState<number>(-1);
+  const isNavigatingRef = useRef(false); // Track if navigation is from our buttons
 
   // Load images enabled preference from localStorage
   useEffect(() => {
@@ -46,6 +56,94 @@ export function FactList({ facts, selectedTag }: FactListProps) {
     if (!selectedTag) return facts;
     return facts.filter((fact) => fact.tags.includes(selectedTag));
   }, [facts, selectedTag]);
+
+  // Initialize tag history when component mounts
+  useEffect(() => {
+    // Only initialize if history is empty
+    if (tagHistory.length === 0) {
+      // First time - initialize with current tag (or empty string if no tag)
+      const initialTag = selectedTag || '';
+      setTagHistory([initialTag]);
+      setCurrentHistoryIndex(0);
+    }
+  }, []); // Only run once on mount
+
+  // Sync history when tag changes from external source (not from our navigation)
+  // This handles cases where user clicks a tag button directly
+  useEffect(() => {
+    if (tagHistory.length === 0) return; // Skip if not initialized yet
+    if (isNavigatingRef.current) return; // Skip if navigation is from our buttons
+    
+    // Check if current tag matches what's in history at current position
+    const currentTagInHistory = tagHistory[currentHistoryIndex];
+    
+    // If tag doesn't match, it's an external change - reset history
+    if (currentTagInHistory !== selectedTag) {
+      // External change (e.g., user clicked a tag button) - reset history
+      setTagHistory([selectedTag || '']);
+      setCurrentHistoryIndex(0);
+    }
+  }, [selectedTag, tagHistory, currentHistoryIndex]);
+
+  const handleNextFact = () => {
+    // Get all available tags from all facts
+    const allTags = Array.from(new Set(facts.flatMap((fact) => fact.tags))).sort();
+    
+    if (allTags.length === 0) return;
+    
+    // Randomly select a new tag
+    const randomTag = allTags[Math.floor(Math.random() * allTags.length)];
+    
+    // Mark that we're navigating from our button
+    isNavigatingRef.current = true;
+    
+    // Add to history (remove any future history if we're not at the end)
+    const newHistory = tagHistory.slice(0, currentHistoryIndex + 1);
+    newHistory.push(randomTag);
+    
+    setTagHistory(newHistory);
+    setCurrentHistoryIndex(newHistory.length - 1);
+    
+    // Update URL to reflect the new tag
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tag', randomTag);
+    const queryString = params.toString();
+    router.push(`${pathname}${queryString ? `?${queryString}` : ''}` as any);
+    
+    // Reset flag after a short delay to allow re-render
+    setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 100);
+  };
+
+  const handlePreviousFact = () => {
+    if (currentHistoryIndex > 0) {
+      const newIndex = currentHistoryIndex - 1;
+      const previousTag = tagHistory[newIndex];
+      
+      // Mark that we're navigating from our button
+      isNavigatingRef.current = true;
+      
+      setCurrentHistoryIndex(newIndex);
+      
+      // Update URL to reflect the previous tag
+      const params = new URLSearchParams(searchParams.toString());
+      if (previousTag) {
+        params.set('tag', previousTag);
+      } else {
+        params.delete('tag');
+      }
+      const queryString = params.toString();
+      router.push(`${pathname}${queryString ? `?${queryString}` : ''}` as any);
+      
+      // Reset flag after a short delay to allow re-render
+      setTimeout(() => {
+        isNavigatingRef.current = false;
+      }, 100);
+    }
+  };
+
+  const canGoBack = currentHistoryIndex > 0;
 
   useEffect(() => {
     if (!imagesEnabled) {
@@ -179,96 +277,156 @@ export function FactList({ facts, selectedTag }: FactListProps) {
     );
   }
 
+  if (loading) {
+    return (
+      <ul className="fun-facts">
+        {filteredFacts.map((fact, index) => (
+          <li key={`${fact.text}-${index}`}>{fact.text}</li>
+        ))}
+      </ul>
+    );
+  }
+
+  if (filteredFacts.length === 0) {
+    return (
+      <div className="no-facts">
+        <p>No facts found for this tag. Try selecting a different tag!</p>
+      </div>
+    );
+  }
+
   return (
-    <ul className="fun-facts">
-      {factsWithImages.map((item, index) => (
-        <li key={`${item.text}-${index}`} className="fact-item">
-          {imagesEnabled && (item.imageUrl || item.useIcon) && (
-            <div className="fact-image">
-              {item.imageUrl ? (
-                <Image
-                  src={item.imageUrl}
-                  alt={item.imageAlt}
-                  width={400}
-                  height={300}
-                  style={{ objectFit: 'cover', borderRadius: '8px' }}
-                />
-              ) : (
-                <div className="fact-icon">
-                  {index % 2 === 0 ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M9 21h6" />
-                      <path d="M12 3a6 6 0 0 0-6 6c0 2.5-1.5 4.5-1.5 4.5h15S18 11.5 18 9a6 6 0 0 0-6-6Z" />
-                      <path d="M12 9v3" />
-                      <path d="M9 15h6" />
-                    </svg>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 16v-4" />
-                      <path d="M12 8h.01" />
-                    </svg>
-                  )}
-                </div>
-              )}
+    <div className="fact-navigation-container">
+      <div className="fact-navigation-controls">
+        <button
+          className={`fact-nav-button fact-nav-prev ${!canGoBack ? 'disabled' : ''}`}
+          onClick={handlePreviousFact}
+          disabled={!canGoBack}
+          aria-label="Previous tag"
+          title="Previous tag"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <button
+          className={`fact-nav-button fact-nav-next`}
+          onClick={handleNextFact}
+          aria-label="Next tag"
+          title="Next tag"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      </div>
+      
+      <ul className="fun-facts">
+        {factsWithImages.map((item, index) => (
+          <li key={`${item.text}-${index}`} className="fact-item">
+            {imagesEnabled && (item.imageUrl || item.useIcon) && (
+              <div className="fact-image">
+                {item.imageUrl ? (
+                  <Image
+                    src={item.imageUrl}
+                    alt={item.imageAlt}
+                    width={400}
+                    height={300}
+                    style={{ objectFit: 'cover', borderRadius: '8px' }}
+                  />
+                ) : (
+                  <div className="fact-icon">
+                    {index % 2 === 0 ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M9 21h6" />
+                        <path d="M12 3a6 6 0 0 0-6 6c0 2.5-1.5 4.5-1.5 4.5h15S18 11.5 18 9a6 6 0 0 0-6-6Z" />
+                        <path d="M12 9v3" />
+                        <path d="M9 15h6" />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                      </svg>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            <div className="fact-content">
+              <div className="fact-text">{item.text}</div>
+              <button
+                className={`speak-button ${speakingIndex === index ? 'speaking' : ''}`}
+                onClick={() => handleSpeak(item.text, index)}
+                aria-label={speakingIndex === index ? 'Stop reading' : 'Read this fact aloud'}
+                title={speakingIndex === index ? 'Stop reading' : 'Read this fact aloud'}
+              >
+                {speakingIndex === index ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="6" y="4" width="4" height="16" />
+                    <rect x="14" y="4" width="4" height="16" />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+                  </svg>
+                )}
+              </button>
             </div>
-          )}
-          <div className="fact-content">
-            <div className="fact-text">{item.text}</div>
-            <button
-              className={`speak-button ${speakingIndex === index ? 'speaking' : ''}`}
-              onClick={() => handleSpeak(item.text, index)}
-              aria-label={speakingIndex === index ? 'Stop reading' : 'Read this fact aloud'}
-              title={speakingIndex === index ? 'Stop reading' : 'Read this fact aloud'}
-            >
-              {speakingIndex === index ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="6" y="4" width="4" height="16" />
-                  <rect x="14" y="4" width="4" height="16" />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

@@ -1,12 +1,12 @@
 import { Fact } from '@/types/fact';
 
 export const electricityFacts: Fact[] = [
-  { text: 'Electricity travels at the speed of light — about 186,000 miles per second (300,000 km/s)!', tags: ['speed', 'physics', 'light speed'] },
+  { text: 'Electricity travels at the speed of light — about 186,000 miles per second (300,000 km/s)!', tags: ['speed', 'physics'] },
   { text: 'A single lightning bolt can power a 100-watt lightbulb for more than 3 months.', tags: ['lightning', 'power', 'energy'] },
-  { text: 'Electric eels can generate up to 600 volts of electricity — enough to stun a horse!', tags: ['animals', 'electric eel', 'voltage', 'biology'] },
+  { text: 'Electric eels can generate up to 600 volts of electricity — enough to stun a horse!', tags: ['electric eel', 'voltage'] },
   { text: 'The word "electricity" comes from the Greek word "elektron," which means amber — the ancient Greeks discovered static electricity by rubbing amber.', tags: ['etymology', 'history', 'ancient greece', 'amber'] },
   { text: 'Benjamin Franklin didn\'t actually discover electricity, but he proved that lightning is electrical with his famous kite experiment in 1752.', tags: ['history', 'benjamin franklin', 'lightning', 'experiment'] },
-  { text: 'Your brain uses electricity to send signals — neurons communicate using electrical impulses traveling at up to 268 miles per hour.', tags: ['brain', 'neurons', 'biology', 'signals'] },
+  { text: 'Your brain uses electricity to send signals — neurons communicate using electrical impulses traveling at up to 268 miles per hour.', tags: ['brain', 'neurons', 'biology'] },
   { text: 'A typical AA battery contains about 3.9 watt-hours of energy — enough to power a small LED light for several hours.', tags: ['batteries', 'energy', 'power', 'electronics'] },
   { text: 'The first electric power plant was built by Thomas Edison in 1882 in New York City, lighting up 400 lightbulbs.', tags: ['history', 'thomas edison', 'power plant', 'invention'] },
   { text: 'Electricity can flow through water because it contains dissolved salts and minerals that conduct electricity — pure water is actually a poor conductor.', tags: ['physics', 'conductivity', 'water', 'science'] },

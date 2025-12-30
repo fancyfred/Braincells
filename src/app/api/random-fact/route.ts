@@ -20,6 +20,16 @@ import { worldLeadersFacts } from '@/data/world-leaders';
 import { elementsFacts } from '@/data/elements';
 import { philosophyFacts } from '@/data/philosophy';
 import { seinfeldFacts } from '@/data/seinfeld';
+import { olympicsFacts } from '@/data/olympics';
+import { internetFacts } from '@/data/internet';
+import { octopiFacts } from '@/data/octopi';
+import { snakesFacts } from '@/data/snakes';
+import { sharksFacts } from '@/data/sharks';
+import { oceansFacts } from '@/data/oceans';
+import { mountainsFacts } from '@/data/mountains';
+import { ancientEgyptFacts } from '@/data/ancient-egypt';
+import { chocolateFacts } from '@/data/chocolate';
+import { spicesFacts } from '@/data/spices';
 import { Fact } from '@/types/fact';
 
 // Combine all facts with their topic information
@@ -50,6 +60,16 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...elementsFacts.map(f => ({ fact: f, topic: 'elements' })),
   ...philosophyFacts.map(f => ({ fact: f, topic: 'philosophy' })),
   ...seinfeldFacts.map(f => ({ fact: f, topic: 'seinfeld' })),
+  ...olympicsFacts.map(f => ({ fact: f, topic: 'olympics' })),
+  ...internetFacts.map(f => ({ fact: f, topic: 'internet' })),
+  ...octopiFacts.map(f => ({ fact: f, topic: 'octopi' })),
+  ...snakesFacts.map(f => ({ fact: f, topic: 'snakes' })),
+  ...sharksFacts.map(f => ({ fact: f, topic: 'sharks' })),
+  ...oceansFacts.map(f => ({ fact: f, topic: 'oceans' })),
+  ...mountainsFacts.map(f => ({ fact: f, topic: 'mountains' })),
+  ...ancientEgyptFacts.map(f => ({ fact: f, topic: 'ancient-egypt' })),
+  ...chocolateFacts.map(f => ({ fact: f, topic: 'chocolate' })),
+  ...spicesFacts.map(f => ({ fact: f, topic: 'spices' })),
 ];
 
 export async function GET(request: Request) {
