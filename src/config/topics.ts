@@ -226,5 +226,12 @@ export const topics: Topic[] = [
     emoji: '🌶️',
     mood: 'general',
   },
+  {
+    slug: 'art',
+    title: 'Art Facts',
+    description: 'Fascinating facts about art, famous artists, art movements, techniques, and masterpieces throughout history.',
+    emoji: '🎨',
+    mood: 'general',
+  },
 ];
 

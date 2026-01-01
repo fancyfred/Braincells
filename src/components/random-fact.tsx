@@ -46,6 +46,7 @@ const topicNames: Record<string, string> = {
   'ancient-egypt': 'ancient Egypt',
   'chocolate': 'chocolate',
   'spices': 'spices',
+  'art': 'art',
 };
 
 export function RandomFact({ className }: RandomFactProps) {

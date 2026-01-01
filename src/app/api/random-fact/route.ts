@@ -30,6 +30,7 @@ import { mountainsFacts } from '@/data/mountains';
 import { ancientEgyptFacts } from '@/data/ancient-egypt';
 import { chocolateFacts } from '@/data/chocolate';
 import { spicesFacts } from '@/data/spices';
+import { artFacts } from '@/data/art';
 import { Fact } from '@/types/fact';
 
 // Combine all facts with their topic information
@@ -70,6 +71,7 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...ancientEgyptFacts.map(f => ({ fact: f, topic: 'ancient-egypt' })),
   ...chocolateFacts.map(f => ({ fact: f, topic: 'chocolate' })),
   ...spicesFacts.map(f => ({ fact: f, topic: 'spices' })),
+  ...artFacts.map(f => ({ fact: f, topic: 'art' })),
 ];
 
 export async function GET(request: Request) {
