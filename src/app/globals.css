@@ -161,6 +161,254 @@ main {
   font-weight: 500;
 }
 
+/* Fact Feed Selector Button */
+.fact-feed-selector-button {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--muted);
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.fact-feed-selector-button:hover {
+  background: color-mix(in srgb, var(--cobalt-500) 10%, transparent);
+  border-color: var(--cobalt-500);
+  color: var(--cobalt-500);
+}
+
+.fact-feed-selector-button svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+}
+
+.fact-feed-selector-count-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--cobalt-500);
+  color: white;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 18px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Fact Feed Selector Mega Menu */
+.fact-feed-selector-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99999;
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow-y: auto;
+  /* Ensure overlay is above everything */
+}
+
+.fact-feed-selector-menu {
+  position: relative;
+  background: var(--card);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  z-index: 100000;
+  width: 90%;
+  max-width: 800px;
+  max-height: min(90vh, calc(100vh - 2rem));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: auto;
+  flex-shrink: 0;
+  /* Ensure menu is always visible - use min margin to prevent cutoff */
+  min-height: 0;
+}
+
+.fact-feed-selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.fact-feed-selector-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.fact-feed-selector-close {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.fact-feed-selector-close:hover {
+  background: color-mix(in srgb, var(--muted) 10%, transparent);
+  color: var(--fg);
+}
+
+.fact-feed-selector-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.fact-feed-selector-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  background: color-mix(in srgb, var(--cobalt-500) 3%, transparent);
+}
+
+.fact-feed-selector-actions .btn {
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.fact-feed-selector-actions .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.fact-feed-selector-count {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  background: color-mix(in srgb, var(--cobalt-500) 5%, transparent);
+  border-radius: 8px;
+}
+
+.fact-feed-selector-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.fact-feed-selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fact-feed-selector-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+
+.fact-feed-selector-group-count {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.fact-feed-selector-topics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.fact-feed-selector-topic {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.fact-feed-selector-topic:hover {
+  background: color-mix(in srgb, var(--mauve-500) 10%, transparent);
+  border-color: color-mix(in srgb, var(--mauve-500) 30%, transparent);
+  transform: translateY(-1px);
+}
+
+.fact-feed-selector-topic input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--cobalt-500);
+}
+
+.fact-feed-selector-topic-emoji {
+  font-size: 1.25rem;
+}
+
+.fact-feed-selector-topic-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.fact-feed-selector-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.btn.small {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .fact-feed-selector-menu {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .fact-feed-selector-topics {
+    grid-template-columns: 1fr;
+  }
+}
+
 .nav-links {
   display: flex;
   gap: 0.9rem;

@@ -31,6 +31,13 @@ import { ancientEgyptFacts } from '@/data/ancient-egypt';
 import { chocolateFacts } from '@/data/chocolate';
 import { spicesFacts } from '@/data/spices';
 import { artFacts } from '@/data/art';
+import { operatingTheatreFacts } from '@/data/operating-theatre';
+import { ethiopianTribesFacts } from '@/data/ethiopian-tribes';
+import { denominationsFacts } from '@/data/denominations';
+import { numberOneSinglesFacts } from '@/data/number-one-singles';
+import { aiFacts } from '@/data/ai';
+import { robotsFacts } from '@/data/robots';
+import { dronesFacts } from '@/data/drones';
 import { Fact } from '@/types/fact';
 
 // Combine all facts with their topic information
@@ -72,15 +79,28 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...chocolateFacts.map(f => ({ fact: f, topic: 'chocolate' })),
   ...spicesFacts.map(f => ({ fact: f, topic: 'spices' })),
   ...artFacts.map(f => ({ fact: f, topic: 'art' })),
+  ...operatingTheatreFacts.map(f => ({ fact: f, topic: 'operating-theatre' })),
+  ...ethiopianTribesFacts.map(f => ({ fact: f, topic: 'ethiopian-tribes' })),
+  ...denominationsFacts.map(f => ({ fact: f, topic: 'denominations' })),
+  ...numberOneSinglesFacts.map(f => ({ fact: f, topic: 'number-one-singles' })),
+  ...aiFacts.map(f => ({ fact: f, topic: 'ai' })),
+  ...robotsFacts.map(f => ({ fact: f, topic: 'robots' })),
+  ...dronesFacts.map(f => ({ fact: f, topic: 'drones' })),
 ];
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const requestedTopic = searchParams.get('topic'); // Optional: filter by topic
+  const requestedTopic = searchParams.get('topic'); // Optional: filter by single topic
+  const requestedTopics = searchParams.get('topics'); // Optional: filter by multiple topics (comma-separated)
   
   let factsToChooseFrom = allFactsWithTopics;
   
-  if (requestedTopic) {
+  if (requestedTopics) {
+    // Filter by multiple topics (for Fact Feed)
+    const topicList = requestedTopics.split(',').map(t => t.trim());
+    factsToChooseFrom = allFactsWithTopics.filter(item => topicList.includes(item.topic));
+  } else if (requestedTopic) {
+    // Filter by single topic (backward compatibility)
     factsToChooseFrom = allFactsWithTopics.filter(item => item.topic === requestedTopic);
   }
   

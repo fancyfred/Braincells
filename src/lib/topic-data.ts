@@ -30,6 +30,13 @@ import { ancientEgyptFacts } from '@/data/ancient-egypt';
 import { chocolateFacts } from '@/data/chocolate';
 import { spicesFacts } from '@/data/spices';
 import { artFacts } from '@/data/art';
+import { operatingTheatreFacts } from '@/data/operating-theatre';
+import { ethiopianTribesFacts } from '@/data/ethiopian-tribes';
+import { denominationsFacts } from '@/data/denominations';
+import { numberOneSinglesFacts } from '@/data/number-one-singles';
+import { aiFacts } from '@/data/ai';
+import { robotsFacts } from '@/data/robots';
+import { dronesFacts } from '@/data/drones';
 import { Fact } from '@/types/fact';
 import { topics } from '@/config/topics';
 
@@ -66,5 +73,12 @@ export const topicData: Record<string, { facts: Fact[]; title: string; descripti
   chocolate: { facts: chocolateFacts, title: 'Chocolate Facts', description: topics.find(t => t.slug === 'chocolate')?.description || '' },
   spices: { facts: spicesFacts, title: 'Spices Facts', description: topics.find(t => t.slug === 'spices')?.description || '' },
   art: { facts: artFacts, title: 'Art Facts', description: topics.find(t => t.slug === 'art')?.description || '' },
+  'operating-theatre': { facts: operatingTheatreFacts, title: 'The Operating Theatre Facts', description: topics.find(t => t.slug === 'operating-theatre')?.description || '' },
+  'ethiopian-tribes': { facts: ethiopianTribesFacts, title: 'Ethiopian Tribes Facts', description: topics.find(t => t.slug === 'ethiopian-tribes')?.description || '' },
+  denominations: { facts: denominationsFacts, title: 'Denominations Facts', description: topics.find(t => t.slug === 'denominations')?.description || '' },
+  'number-one-singles': { facts: numberOneSinglesFacts, title: 'Number One Singles Facts', description: topics.find(t => t.slug === 'number-one-singles')?.description || '' },
+  ai: { facts: aiFacts, title: 'A.I Facts', description: topics.find(t => t.slug === 'ai')?.description || '' },
+  robots: { facts: robotsFacts, title: 'Robots Facts', description: topics.find(t => t.slug === 'robots')?.description || '' },
+  drones: { facts: dronesFacts, title: 'Drones Facts', description: topics.find(t => t.slug === 'drones')?.description || '' },
 };
 

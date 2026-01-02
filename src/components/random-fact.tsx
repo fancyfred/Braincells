@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { getTTSService, type TTSService } from '@/lib/tts-service';
+import { FactFeedSelector } from './fact-feed-selector';
+import { topics, type Topic } from '@/config/topics';
 
 interface RandomFactProps {
   className?: string;
@@ -47,26 +49,54 @@ const topicNames: Record<string, string> = {
   'chocolate': 'chocolate',
   'spices': 'spices',
   'art': 'art',
+  'operating-theatre': 'the operating theatre',
+  'ethiopian-tribes': 'Ethiopian tribes',
+  'denominations': 'religious denominations',
+  'number-one-singles': 'number one singles',
+  'ai': 'artificial intelligence',
+  'robots': 'robots',
+  'drones': 'drones',
 };
 
 export function RandomFact({ className }: RandomFactProps) {
   const [fact, setFact] = useState<FactData | null>(null);
   const [loading, setLoading] = useState(true);
   const [factFeedMode, setFactFeedMode] = useState(false);
+  const [selectorOpen, setSelectorOpen] = useState(false);
+  const [selectedTopics, setSelectedTopics] = useState<Set<string>>(new Set());
   const ttsServiceRef = useRef<TTSService | null>(null);
   const isProcessingRef = useRef<boolean>(false);
   const factFeedActiveRef = useRef<boolean>(false);
+
+  // Load selected topics from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('fact-feed-topics');
+    if (saved) {
+      try {
+        const topicsArray = JSON.parse(saved);
+        setSelectedTopics(new Set(topicsArray));
+      } catch (e) {
+        // If parsing fails, default to all topics
+        setSelectedTopics(new Set(topics.map((t: Topic) => t.slug)));
+      }
+    } else {
+      // Default to all topics if nothing saved
+      setSelectedTopics(new Set(topics.map((t: Topic) => t.slug)));
+    }
+  }, []);
 
   // Initialize TTS service
   useEffect(() => {
     ttsServiceRef.current = getTTSService();
   }, []);
 
-  const fetchRandomFact = async () => {
+  const fetchRandomFact = useCallback(async () => {
     setLoading(true);
-    // Always fetch from all topics, regardless of current page
+    // Fetch from selected topics only
     try {
-      const response = await fetch('/api/random-fact');
+      const topicsParam = Array.from(selectedTopics).join(',');
+      const url = topicsParam ? `/api/random-fact?topics=${encodeURIComponent(topicsParam)}` : '/api/random-fact';
+      const response = await fetch(url);
       const data = await response.json();
       setFact(data);
       return data;
@@ -78,6 +108,13 @@ export function RandomFact({ className }: RandomFactProps) {
     } finally {
       setLoading(false);
     }
+  }, [selectedTopics]);
+
+  const handleTopicsChange = (newTopics: Set<string>) => {
+    setSelectedTopics(newTopics);
+    // Save to localStorage
+    localStorage.setItem('fact-feed-topics', JSON.stringify(Array.from(newTopics)));
+    // If fact feed is active, it will use the new selection on next fetch
   };
 
   // Set up Media Session API for background audio support
@@ -231,7 +268,7 @@ export function RandomFact({ className }: RandomFactProps) {
       const interval = setInterval(fetchRandomFact, 30000);
       return () => clearInterval(interval);
     }
-  }, [factFeedMode]);
+  }, [factFeedMode, selectedTopics]);
 
   useEffect(() => {
     factFeedActiveRef.current = factFeedMode;
@@ -297,7 +334,7 @@ export function RandomFact({ className }: RandomFactProps) {
     };
 
     playFactAndContinue();
-  }, [fact, factFeedMode]);
+  }, [fact, factFeedMode, fetchRandomFact]);
 
   // Cleanup: stop speech when component unmounts or mode changes
   useEffect(() => {
@@ -315,18 +352,18 @@ export function RandomFact({ className }: RandomFactProps) {
   };
 
   return (
-    <div className={`random-fact ${className || ''} ${factFeedMode ? 'fact-feed-active' : ''}`}>
-      <span className="random-fact-label">Fact:</span>
-      <span className="random-fact-text">
-        {loading ? 'Loading...' : fact?.fact || 'No fact available.'}
-      </span>
-      <button
-        className={`fact-feed-toggle ${factFeedMode ? 'active' : ''}`}
-        onClick={toggleFactFeed}
-        aria-label={factFeedMode ? 'Stop Fact Feed' : 'Start Fact Feed'}
-        title={factFeedMode ? 'Stop Fact Feed' : 'Start Fact Feed'}
-      >
-        {factFeedMode ? (
+    <>
+      <div className={`random-fact ${className || ''} ${factFeedMode ? 'fact-feed-active' : ''}`}>
+        <span className="random-fact-label">Fact:</span>
+        <span className="random-fact-text">
+          {loading ? 'Loading...' : fact?.fact || 'No fact available.'}
+        </span>
+        <button
+          className="fact-feed-selector-button"
+          onClick={() => setSelectorOpen(true)}
+          aria-label="Select topics for Fact Feed"
+          title="Select topics for Fact Feed"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -336,25 +373,54 @@ export function RandomFact({ className }: RandomFactProps) {
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <rect x="6" y="4" width="4" height="16" />
-            <rect x="14" y="4" width="4" height="16" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
           </svg>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polygon points="5 3 19 12 5 21 5 3" />
-          </svg>
-        )}
-        <span className="fact-feed-label">{factFeedMode ? 'Stop Feed' : 'Fact Feed'}</span>
-      </button>
-    </div>
+          <span className="fact-feed-selector-count-badge">{selectedTopics.size}</span>
+        </button>
+        <button
+          className={`fact-feed-toggle ${factFeedMode ? 'active' : ''}`}
+          onClick={toggleFactFeed}
+          aria-label={factFeedMode ? 'Stop Fact Feed' : 'Start Fact Feed'}
+          title={factFeedMode ? 'Stop Fact Feed' : 'Start Fact Feed'}
+        >
+          {factFeedMode ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="6" y="4" width="4" height="16" />
+              <rect x="14" y="4" width="4" height="16" />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+          )}
+          <span className="fact-feed-label">{factFeedMode ? 'Stop Feed' : 'Fact Feed'}</span>
+        </button>
+      </div>
+      <FactFeedSelector
+        isOpen={selectorOpen}
+        onClose={() => setSelectorOpen(false)}
+        selectedTopics={selectedTopics}
+        onTopicsChange={handleTopicsChange}
+      />
+    </>
   );
 }
 
