@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PollyClient, SynthesizeSpeechCommand } from '@aws-sdk/client-polly';
+import { PollyClient, SynthesizeSpeechCommand, VoiceId } from '@aws-sdk/client-polly';
 import { Readable } from 'stream';
 
 // Initialize Polly client with credentials from environment variables
@@ -12,7 +12,7 @@ const pollyClient = new PollyClient({
 });
 
 // Available Polly voices (neural voices for better quality)
-const POLLY_VOICES = [
+const POLLY_VOICES: VoiceId[] = [
   'Joanna', // Female, US English
   'Matthew', // Male, US English
   'Amy', // Female, British English
@@ -26,10 +26,10 @@ const POLLY_VOICES = [
   'Ivy', // Female, US English (child voice)
   'Ruth', // Female, US English
   'Stephen', // Male, US English
-] as const;
+];
 
 // Get a random Polly voice
-function getRandomPollyVoice(): string {
+function getRandomPollyVoice(): VoiceId {
   const randomIndex = Math.floor(Math.random() * POLLY_VOICES.length);
   return POLLY_VOICES[randomIndex];
 }

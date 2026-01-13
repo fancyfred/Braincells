@@ -296,5 +296,12 @@ export const topics: Topic[] = [
     emoji: '🍩',
     mood: 'obscure',
   },
+  {
+    slug: 'memes',
+    title: 'Memes Facts',
+    description: 'Fascinating facts about internet memes, their origins, evolution, cultural impact, and how they\'ve shaped digital culture and communication.',
+    emoji: '😂',
+    mood: 'obscure',
+  },
 ];
 

@@ -58,6 +58,7 @@ const topicNames: Record<string, string> = {
   'drones': 'drones',
   'explorers': 'explorers',
   'simpsons': 'The Simpsons',
+  'memes': 'memes',
 };
 
 export function RandomFact({ className }: RandomFactProps) {

@@ -39,6 +39,7 @@ import { robotsFacts } from '@/data/robots';
 import { dronesFacts } from '@/data/drones';
 import { explorersFacts } from '@/data/explorers';
 import { simpsonsFacts } from '@/data/simpsons';
+import { memesFacts } from '@/data/memes';
 import { Fact } from '@/types/fact';
 import { topics } from '@/config/topics';
 
@@ -84,5 +85,6 @@ export const topicData: Record<string, { facts: Fact[]; title: string; descripti
   drones: { facts: dronesFacts, title: 'Drones Facts', description: topics.find(t => t.slug === 'drones')?.description || '' },
   explorers: { facts: explorersFacts, title: 'Explorers Facts', description: topics.find(t => t.slug === 'explorers')?.description || '' },
   simpsons: { facts: simpsonsFacts, title: 'The Simpsons Facts', description: topics.find(t => t.slug === 'simpsons')?.description || '' },
+  memes: { facts: memesFacts, title: 'Memes Facts', description: topics.find(t => t.slug === 'memes')?.description || '' },
 };
 
