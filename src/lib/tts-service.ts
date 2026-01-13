@@ -83,6 +83,160 @@ class BrowserTTSService implements TTSService {
   }
 }
 
+class PollyTTSService implements TTSService {
+  private currentAudio: HTMLAudioElement | null = null;
+
+  async speak(text: string): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log('[PollyTTS] Synthesizing speech...');
+
+        // Call the Polly API route
+        const response = await fetch('/api/tts/polly', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('[PollyTTS] Got audio data, voice:', data.voice);
+
+        // Create audio element from the data URL
+        const audio = new Audio(data.url);
+        this.currentAudio = audio;
+
+        // Preload the audio
+        audio.preload = 'auto';
+
+        // Set up Media Session API for background audio support
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
+            artist: 'Fact Me App',
+            album: 'Fact Feed',
+          });
+
+          navigator.mediaSession.setActionHandler('play', async () => {
+            if (audio.paused) {
+              try {
+                await audio.play();
+                console.log('[PollyTTS] Audio resumed via media session');
+              } catch (e) {
+                console.error('[PollyTTS] Failed to resume audio:', e);
+              }
+            }
+          });
+
+          navigator.mediaSession.setActionHandler('pause', () => {
+            console.log('[PollyTTS] Pause requested but ignored for continuous playback');
+          });
+        }
+
+        // Add event listeners
+        audio.onloadstart = () => console.log('[PollyTTS] Audio loading started');
+        audio.oncanplay = () => console.log('[PollyTTS] Audio can play');
+        audio.onplay = () => console.log('[PollyTTS] Audio playing');
+
+        // Handle unexpected pauses
+        audio.onpause = () => {
+          console.log('[PollyTTS] Audio paused unexpectedly');
+          if (document.visibilityState === 'hidden' || document.hidden) {
+            setTimeout(async () => {
+              if (audio.paused && this.currentAudio === audio) {
+                try {
+                  await audio.play();
+                  console.log('[PollyTTS] Audio resumed after unexpected pause');
+                } catch (e) {
+                  console.error('[PollyTTS] Failed to resume after pause:', e);
+                }
+              }
+            }, 100);
+          }
+        };
+
+        // Monitor for visibility changes
+        const handleVisibilityChange = async () => {
+          if (document.visibilityState === 'hidden' && audio.paused && this.currentAudio === audio) {
+            try {
+              await audio.play();
+              console.log('[PollyTTS] Audio resumed after visibility change');
+            } catch (e) {
+              console.error('[PollyTTS] Failed to resume after visibility change:', e);
+            }
+          }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        audio.onended = () => {
+          console.log('[PollyTTS] Audio ended');
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+          this.currentAudio = null;
+          resolve();
+        };
+
+        audio.onerror = (error) => {
+          console.error('[PollyTTS] Audio error:', error);
+          console.error('[PollyTTS] Audio error details:', {
+            error: audio.error,
+            networkState: audio.networkState,
+            readyState: audio.readyState,
+          });
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+          this.currentAudio = null;
+          reject(new Error(`Audio playback failed: ${audio.error?.message || 'Unknown error'}`));
+        };
+
+        // Play the audio
+        console.log('[PollyTTS] Attempting to play audio...');
+        try {
+          await audio.play();
+          console.log('[PollyTTS] Audio play() succeeded');
+
+          // Keep audio playing even if page goes to background
+          const keepAliveInterval = setInterval(() => {
+            if (this.currentAudio === audio && audio.paused && !audio.ended) {
+              console.log('[PollyTTS] Audio paused, attempting to resume...');
+              audio.play().catch((e) => {
+                console.error('[PollyTTS] Failed to resume in keep-alive:', e);
+                clearInterval(keepAliveInterval);
+              });
+            } else if (audio.ended || this.currentAudio !== audio) {
+              clearInterval(keepAliveInterval);
+            }
+          }, 2000);
+
+          audio.addEventListener('ended', () => clearInterval(keepAliveInterval), { once: true });
+        } catch (playError: any) {
+          console.error('[PollyTTS] Audio play() failed:', playError);
+          if (playError.name === 'NotAllowedError') {
+            reject(new Error('Audio autoplay was blocked. Please interact with the page first.'));
+          } else {
+            reject(playError);
+          }
+        }
+      } catch (error) {
+        console.error('[PollyTTS] Error in speak():', error);
+        reject(error);
+      }
+    });
+  }
+
+  cancel(): void {
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio.currentTime = 0;
+      this.currentAudio = null;
+    }
+  }
+}
+
 class PuterTTSService implements TTSService {
   private currentAudio: HTMLAudioElement | null = null;
   private puterReady: Promise<void>;
@@ -312,6 +466,13 @@ export function getTTSService(): TTSService {
     return new PuterTTSService();
   }
 
+  if (service === 'POLLY') {
+    console.log('[TTS] Initializing AWS Polly TTS service');
+    return new PollyTTSService();
+  }
+
+  // Explicitly handle BROWSER service or default to Browser TTS for any other value
+  // This ensures environments that don't want to use Puter or Polly can explicitly set BROWSER
   console.log('[TTS] Initializing Browser TTS service');
   return new BrowserTTSService();
 }

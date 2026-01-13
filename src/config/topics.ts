@@ -282,5 +282,19 @@ export const topics: Topic[] = [
     emoji: '🚁',
     mood: 'niche',
   },
+  {
+    slug: 'explorers',
+    title: 'Explorers Facts',
+    description: 'Fascinating facts about famous explorers, their journeys, discoveries, and the adventures that shaped our world.',
+    emoji: '🗺️',
+    mood: 'general',
+  },
+  {
+    slug: 'simpsons',
+    title: 'The Simpsons Facts',
+    description: 'Fascinating facts about The Simpsons, its characters, episodes, catchphrases, cultural impact, and behind-the-scenes stories from the longest-running animated series.',
+    emoji: '🍩',
+    mood: 'obscure',
+  },
 ];
 

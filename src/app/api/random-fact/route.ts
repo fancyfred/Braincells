@@ -38,6 +38,8 @@ import { numberOneSinglesFacts } from '@/data/number-one-singles';
 import { aiFacts } from '@/data/ai';
 import { robotsFacts } from '@/data/robots';
 import { dronesFacts } from '@/data/drones';
+import { explorersFacts } from '@/data/explorers';
+import { simpsonsFacts } from '@/data/simpsons';
 import { Fact } from '@/types/fact';
 
 // Combine all facts with their topic information
@@ -86,6 +88,8 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...aiFacts.map(f => ({ fact: f, topic: 'ai' })),
   ...robotsFacts.map(f => ({ fact: f, topic: 'robots' })),
   ...dronesFacts.map(f => ({ fact: f, topic: 'drones' })),
+  ...explorersFacts.map(f => ({ fact: f, topic: 'explorers' })),
+  ...simpsonsFacts.map(f => ({ fact: f, topic: 'simpsons' })),
 ];
 
 export async function GET(request: Request) {

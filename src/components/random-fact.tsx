@@ -56,6 +56,8 @@ const topicNames: Record<string, string> = {
   'ai': 'artificial intelligence',
   'robots': 'robots',
   'drones': 'drones',
+  'explorers': 'explorers',
+  'simpsons': 'The Simpsons',
 };
 
 export function RandomFact({ className }: RandomFactProps) {
@@ -67,6 +69,7 @@ export function RandomFact({ className }: RandomFactProps) {
   const ttsServiceRef = useRef<TTSService | null>(null);
   const isProcessingRef = useRef<boolean>(false);
   const factFeedActiveRef = useRef<boolean>(false);
+  const previousTopicRef = useRef<string | null>(null);
 
   // Load selected topics from localStorage
   useEffect(() => {
@@ -114,6 +117,8 @@ export function RandomFact({ className }: RandomFactProps) {
     setSelectedTopics(newTopics);
     // Save to localStorage
     localStorage.setItem('fact-feed-topics', JSON.stringify(Array.from(newTopics)));
+    // Reset previous topic when topics change
+    previousTopicRef.current = null;
     // If fact feed is active, it will use the new selection on next fetch
   };
 
@@ -171,19 +176,53 @@ export function RandomFact({ className }: RandomFactProps) {
     // Get topic name
     const topicName = topicNames[topic] || 'various topics';
     
-    // Random intro sentence variations
-    const introVariations = [
-      `Here's a fact about ${topicName}.`,
-      `Did you know this about ${topicName}?`,
-      `Here's something interesting about ${topicName}.`,
-      `Let's learn about ${topicName}.`,
-      `Here's a ${topicName} fact.`,
-      `Time for a ${topicName} fact.`,
-      `Here's something about ${topicName}.`,
-      `A quick fact about ${topicName}.`,
-      `Here's what you should know about ${topicName}.`,
-      `Interesting fact about ${topicName}.`,
-    ];
+    // Check if this is the same topic as the previous fact
+    const isSameTopic = previousTopicRef.current === topic;
+    
+    // Update previous topic for next time
+    previousTopicRef.current = topic;
+    
+    let introVariations: string[];
+    
+    if (isSameTopic) {
+      // Different intro variations when topic stays the same
+      introVariations = [
+        `While we're on the subject of ${topicName},`,
+        `Staying with ${topicName},`,
+        `Here's another fact about ${topicName}.`,
+        `Something else you might not have known about ${topicName}:`,
+        `Another interesting thing about ${topicName}:`,
+        `Continuing with ${topicName},`,
+        `More about ${topicName}:`,
+        `Here's another ${topicName} fact.`,
+        `Still on ${topicName},`,
+        `Another ${topicName} tidbit:`,
+        `Let's continue with ${topicName}.`,
+        `Here's more about ${topicName}.`,
+        `Sticking with ${topicName},`,
+        `Another fascinating fact about ${topicName}:`,
+        `On the topic of ${topicName}, here's another:`,
+        `Yet another ${topicName} fact:`,
+        `More ${topicName} knowledge:`,
+        `Another ${topicName} detail:`,
+        `Continuing our exploration of ${topicName},`,
+        `Here's another piece of ${topicName} trivia.`,
+      ];
+    } else {
+      // Original intro variations for new topics
+      introVariations = [
+        `Here's a fact about ${topicName}.`,
+        `Did you know this about ${topicName}?`,
+        `Here's something interesting about ${topicName}.`,
+        `Let's learn about ${topicName}.`,
+        `Here's a ${topicName} fact.`,
+        `Time for a ${topicName} fact.`,
+        `Here's something about ${topicName}.`,
+        `A quick fact about ${topicName}.`,
+        `Here's what you should know about ${topicName}.`,
+        `Interesting fact about ${topicName}.`,
+      ];
+    }
     
     // Pick a random intro
     const intro = introVariations[Math.floor(Math.random() * introVariations.length)];
@@ -276,6 +315,8 @@ export function RandomFact({ className }: RandomFactProps) {
     if (!factFeedMode) {
       // Stop any ongoing processing when mode is turned off
       isProcessingRef.current = false;
+      // Reset previous topic when fact feed is turned off
+      previousTopicRef.current = null;
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
@@ -348,6 +389,8 @@ export function RandomFact({ className }: RandomFactProps) {
     ttsServiceRef.current?.cancel();
     // Reset processing flag
     isProcessingRef.current = false;
+    // Reset previous topic when toggling fact feed
+    previousTopicRef.current = null;
     setFactFeedMode(!factFeedMode);
   };
 

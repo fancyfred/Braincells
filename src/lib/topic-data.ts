@@ -37,6 +37,8 @@ import { numberOneSinglesFacts } from '@/data/number-one-singles';
 import { aiFacts } from '@/data/ai';
 import { robotsFacts } from '@/data/robots';
 import { dronesFacts } from '@/data/drones';
+import { explorersFacts } from '@/data/explorers';
+import { simpsonsFacts } from '@/data/simpsons';
 import { Fact } from '@/types/fact';
 import { topics } from '@/config/topics';
 
@@ -80,5 +82,7 @@ export const topicData: Record<string, { facts: Fact[]; title: string; descripti
   ai: { facts: aiFacts, title: 'A.I Facts', description: topics.find(t => t.slug === 'ai')?.description || '' },
   robots: { facts: robotsFacts, title: 'Robots Facts', description: topics.find(t => t.slug === 'robots')?.description || '' },
   drones: { facts: dronesFacts, title: 'Drones Facts', description: topics.find(t => t.slug === 'drones')?.description || '' },
+  explorers: { facts: explorersFacts, title: 'Explorers Facts', description: topics.find(t => t.slug === 'explorers')?.description || '' },
+  simpsons: { facts: simpsonsFacts, title: 'The Simpsons Facts', description: topics.find(t => t.slug === 'simpsons')?.description || '' },
 };
 
