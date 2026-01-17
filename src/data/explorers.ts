@@ -48,3 +48,4 @@ export const explorersFacts: Fact[] = [
   { text: 'Modern exploration continues with deep-sea expeditions, space missions, and polar research, using advanced technology to explore the last frontiers on Earth and beyond.', tags: ['modern exploration', 'deep sea', 'space', 'polar', 'technology', 'frontiers'] },
 ];
 
+

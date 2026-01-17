@@ -56,3 +56,4 @@ export const beerFacts: Fact[] = [
   { text: 'The world\'s largest beer can pyramid was built in Germany using 77,000 beer cans and stood 4.5 meters (14.8 feet) tall.', tags: ['records', 'germany', 'pyramids', 'cans', 'art'] },
 ];
 
+

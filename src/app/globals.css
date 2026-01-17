@@ -301,6 +301,36 @@ main {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.fact-feed-selector-randomizer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fact-feed-selector-randomizer-input {
+  width: 60px;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--fg);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.fact-feed-selector-randomizer-input:focus {
+  outline: none;
+  border-color: var(--cobalt-500);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cobalt-500) 20%, transparent);
+}
+
+.fact-feed-selector-randomizer-input::-webkit-inner-spin-button,
+.fact-feed-selector-randomizer-input::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
 .fact-feed-selector-count {
   margin-left: auto;
   color: var(--muted);
@@ -605,6 +635,12 @@ main {
   height: 90px;
   flex-shrink: 0;
   overflow: hidden;
+  /* Always reserve space to prevent layout shift when image loads */
+  min-width: 120px;
+  min-height: 90px;
+  /* Use a placeholder background while loading */
+  background: color-mix(in srgb, var(--muted) 5%, transparent);
+  border-radius: 8px;
 }
 
 .fact-image img {
@@ -698,6 +734,7 @@ main {
   align-items: center;
   margin-bottom: 1.5rem;
   gap: 1rem;
+  min-height: 48px; /* Reserve space to prevent layout shift */
 }
 
 .fact-nav-button {
@@ -713,6 +750,9 @@ main {
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  /* Always reserve space, even when hidden */
+  min-width: 48px;
+  min-height: 48px;
 }
 
 .fact-nav-button:hover:not(.disabled) {

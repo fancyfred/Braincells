@@ -71,3 +71,4 @@ export const simpsonsFacts: Fact[] = [
   { text: 'The Simpsons has been referenced in academic papers and books, with scholars analyzing its cultural impact, social commentary, and influence on American society and media.', tags: ['academic', 'papers', 'books', 'scholarship', 'cultural impact', 'analysis'] },
 ];
 
+

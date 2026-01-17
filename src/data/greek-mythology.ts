@@ -55,3 +55,4 @@ export const greekMythologyFacts: Fact[] = [
   { text: 'The story of the Argonauts and the Golden Fleece involved 50 heroes including Hercules, Orpheus, and Theseus on a dangerous quest.', tags: ['argonauts', 'golden fleece', 'jason', 'quest'] },
 ];
 
+

@@ -59,6 +59,8 @@ const topicNames: Record<string, string> = {
   'explorers': 'explorers',
   'simpsons': 'The Simpsons',
   'memes': 'memes',
+  'bamboo': 'bamboo',
+  'technology-timeline': 'the technology timeline',
 };
 
 export function RandomFact({ className }: RandomFactProps) {
@@ -175,7 +177,25 @@ export function RandomFact({ className }: RandomFactProps) {
     ttsServiceRef.current?.cancel();
     
     // Get topic name
-    const topicName = topicNames[topic] || 'various topics';
+    let topicName = topicNames[topic] || 'various topics';
+    
+    // Helper function to process topic name and determine article
+    const processTopicName = (name: string): { name: string; article: string } => {
+      // Check if topic name starts with "The "
+      if (name.startsWith('The ')) {
+        const nameWithoutThe = name.substring(4); // Remove "The "
+        // Determine article based on first letter of the word after "The"
+        const firstLetter = nameWithoutThe.charAt(0).toLowerCase();
+        const article = ['a', 'e', 'i', 'o', 'u'].includes(firstLetter) ? 'an' : 'a';
+        return { name: nameWithoutThe, article };
+      }
+      // For names not starting with "The", determine article based on first letter
+      const firstLetter = name.charAt(0).toLowerCase();
+      const article = ['a', 'e', 'i', 'o', 'u'].includes(firstLetter) ? 'an' : 'a';
+      return { name, article };
+    };
+    
+    const { name: processedTopicName, article } = processTopicName(topicName);
     
     // Check if this is the same topic as the previous fact
     const isSameTopic = previousTopicRef.current === topic;
@@ -195,19 +215,19 @@ export function RandomFact({ className }: RandomFactProps) {
         `Another interesting thing about ${topicName}:`,
         `Continuing with ${topicName},`,
         `More about ${topicName}:`,
-        `Here's another ${topicName} fact.`,
+        `Here's another ${processedTopicName} fact.`,
         `Still on ${topicName},`,
-        `Another ${topicName} tidbit:`,
+        `Another ${processedTopicName} tidbit:`,
         `Let's continue with ${topicName}.`,
         `Here's more about ${topicName}.`,
         `Sticking with ${topicName},`,
         `Another fascinating fact about ${topicName}:`,
         `On the topic of ${topicName}, here's another:`,
-        `Yet another ${topicName} fact:`,
-        `More ${topicName} knowledge:`,
-        `Another ${topicName} detail:`,
+        `Yet another ${processedTopicName} fact:`,
+        `More ${processedTopicName} knowledge:`,
+        `Another ${processedTopicName} detail:`,
         `Continuing our exploration of ${topicName},`,
-        `Here's another piece of ${topicName} trivia.`,
+        `Here's another piece of ${processedTopicName} trivia.`,
       ];
     } else {
       // Original intro variations for new topics
@@ -216,8 +236,8 @@ export function RandomFact({ className }: RandomFactProps) {
         `Did you know this about ${topicName}?`,
         `Here's something interesting about ${topicName}.`,
         `Let's learn about ${topicName}.`,
-        `Here's a ${topicName} fact.`,
-        `Time for a ${topicName} fact.`,
+        `Here's ${article} ${processedTopicName} fact.`,
+        `Time for ${article} ${processedTopicName} fact.`,
         `Here's something about ${topicName}.`,
         `A quick fact about ${topicName}.`,
         `Here's what you should know about ${topicName}.`,

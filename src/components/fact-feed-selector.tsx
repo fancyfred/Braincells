@@ -15,6 +15,7 @@ interface FactFeedSelectorProps {
 
 export function FactFeedSelector({ isOpen, onClose, selectedTopics, onTopicsChange }: FactFeedSelectorProps) {
   const [localSelected, setLocalSelected] = useState<Set<string>>(selectedTopics);
+  const [randomCount, setRandomCount] = useState<number>(5);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Sync local state with props
@@ -60,6 +61,14 @@ export function FactFeedSelector({ isOpen, onClose, selectedTopics, onTopicsChan
 
   const handleDeselectAll = () => {
     setLocalSelected(new Set());
+  };
+
+  const handleRandomize = () => {
+    const allSlugs = topics.map(t => t.slug);
+    const shuffled = [...allSlugs].sort(() => Math.random() - 0.5);
+    const count = Math.min(Math.max(1, randomCount), allSlugs.length);
+    const randomSelection = new Set(shuffled.slice(0, count));
+    setLocalSelected(randomSelection);
   };
 
   const handleApply = () => {
@@ -112,6 +121,20 @@ export function FactFeedSelector({ isOpen, onClose, selectedTopics, onTopicsChan
           <button onClick={handleDeselectAll} className="btn secondary small">
             Deselect All
           </button>
+          <div className="fact-feed-selector-randomizer">
+            <input
+              type="number"
+              min="1"
+              max={topics.length}
+              value={randomCount}
+              onChange={(e) => setRandomCount(Math.min(Math.max(1, parseInt(e.target.value) || 1), topics.length))}
+              className="fact-feed-selector-randomizer-input"
+              aria-label="Number of topics to randomly select"
+            />
+            <button onClick={handleRandomize} className="btn secondary small">
+              Randomize
+            </button>
+          </div>
           <div className="fact-feed-selector-count">
             {localSelected.size} of {topics.length} selected
           </div>

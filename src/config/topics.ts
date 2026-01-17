@@ -303,5 +303,19 @@ export const topics: Topic[] = [
     emoji: '😂',
     mood: 'obscure',
   },
+  {
+    slug: 'bamboo',
+    title: 'Bamboo Facts',
+    description: 'Fascinating facts about bamboo, its incredible uses, weird properties, strength, growth speed, and how this versatile grass is used in everything from construction to technology.',
+    emoji: '🎋',
+    mood: 'niche',
+  },
+  {
+    slug: 'technology-timeline',
+    title: 'Technology Timeline Facts',
+    description: 'Fascinating facts tracing the evolution of technology from punch cards and typewriters through to smartphones, mapping the incredible journey of computing and digital innovation.',
+    emoji: '📱',
+    mood: 'general',
+  },
 ];
 

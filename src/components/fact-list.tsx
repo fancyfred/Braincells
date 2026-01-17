@@ -304,6 +304,7 @@ export function FactList({ facts, selectedTag }: FactListProps) {
           disabled={!canGoBack}
           aria-label="Previous tag"
           title="Previous tag"
+          style={{ visibility: !canGoBack ? 'hidden' : 'visible' }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -340,52 +341,50 @@ export function FactList({ facts, selectedTag }: FactListProps) {
       <ul className="fun-facts">
         {factsWithImages.map((item, index) => (
           <li key={`${item.text}-${index}`} className="fact-item">
-            {imagesEnabled && (item.imageUrl || item.useIcon) && (
-              <div className="fact-image">
-                {item.imageUrl ? (
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.imageAlt}
-                    width={400}
-                    height={300}
-                    style={{ objectFit: 'cover', borderRadius: '8px' }}
-                  />
-                ) : (
-                  <div className="fact-icon">
-                    {index % 2 === 0 ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M9 21h6" />
-                        <path d="M12 3a6 6 0 0 0-6 6c0 2.5-1.5 4.5-1.5 4.5h15S18 11.5 18 9a6 6 0 0 0-6-6Z" />
-                        <path d="M12 9v3" />
-                        <path d="M9 15h6" />
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 16v-4" />
-                        <path d="M12 8h.01" />
-                      </svg>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
+            <div className="fact-image" style={{ visibility: imagesEnabled && (item.imageUrl || item.useIcon) ? 'visible' : 'hidden' }}>
+              {imagesEnabled && item.imageUrl ? (
+                <Image
+                  src={item.imageUrl}
+                  alt={item.imageAlt}
+                  width={400}
+                  height={300}
+                  style={{ objectFit: 'cover', borderRadius: '8px' }}
+                />
+              ) : imagesEnabled && item.useIcon ? (
+                <div className="fact-icon">
+                  {index % 2 === 0 ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M9 21h6" />
+                      <path d="M12 3a6 6 0 0 0-6 6c0 2.5-1.5 4.5-1.5 4.5h15S18 11.5 18 9a6 6 0 0 0-6-6Z" />
+                      <path d="M12 9v3" />
+                      <path d="M9 15h6" />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 16v-4" />
+                      <path d="M12 8h.01" />
+                    </svg>
+                  )}
+                </div>
+              ) : null}
+            </div>
             <div className="fact-content">
               <div className="fact-text">{item.text}</div>
               <button
