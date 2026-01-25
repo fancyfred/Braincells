@@ -46,6 +46,7 @@ import { latitudeLongitudeFacts } from '@/data/latitude-longitude';
 import { greenlandFacts } from '@/data/greenland';
 import { austronesianMigrationFacts } from '@/data/austronesian-migration';
 import { dutchEmpireFacts } from '@/data/dutch-empire';
+import { obscureFastFoodFacts } from '@/data/obscure-fast-food';
 import { Fact } from '@/types/fact';
 import { topics } from '@/config/topics';
 
@@ -98,5 +99,6 @@ export const topicData: Record<string, { facts: Fact[]; title: string; descripti
   greenland: { facts: greenlandFacts, title: 'Greenland Facts', description: topics.find(t => t.slug === 'greenland')?.description || '' },
   'austronesian-migration': { facts: austronesianMigrationFacts, title: 'Austronesian Migration Facts', description: topics.find(t => t.slug === 'austronesian-migration')?.description || '' },
   'dutch-empire': { facts: dutchEmpireFacts, title: 'Dutch Empire Facts', description: topics.find(t => t.slug === 'dutch-empire')?.description || '' },
+  'obscure-fast-food': { facts: obscureFastFoodFacts, title: 'Obscure Fast Food Facts', description: topics.find(t => t.slug === 'obscure-fast-food')?.description || '' },
 };
 

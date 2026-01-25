@@ -345,5 +345,12 @@ export const topics: Topic[] = [
     emoji: '🇳🇱',
     mood: 'general',
   },
+  {
+    slug: 'obscure-fast-food',
+    title: 'Obscure Fast Food Facts',
+    description: 'Fascinating facts about obscure fast food chains, regional favorites, secret menus, discontinued items, unusual menu creations, and the hidden world of fast food beyond the major chains.',
+    emoji: '🍔',
+    mood: 'obscure',
+  },
 ];
 

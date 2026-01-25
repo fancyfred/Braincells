@@ -47,6 +47,7 @@ import { latitudeLongitudeFacts } from '@/data/latitude-longitude';
 import { greenlandFacts } from '@/data/greenland';
 import { austronesianMigrationFacts } from '@/data/austronesian-migration';
 import { dutchEmpireFacts } from '@/data/dutch-empire';
+import { obscureFastFoodFacts } from '@/data/obscure-fast-food';
 import { Fact } from '@/types/fact';
 
 // Combine all facts with their topic information
@@ -104,6 +105,7 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...greenlandFacts.map(f => ({ fact: f, topic: 'greenland' })),
   ...austronesianMigrationFacts.map(f => ({ fact: f, topic: 'austronesian-migration' })),
   ...dutchEmpireFacts.map(f => ({ fact: f, topic: 'dutch-empire' })),
+  ...obscureFastFoodFacts.map(f => ({ fact: f, topic: 'obscure-fast-food' })),
 ];
 
 export async function GET(request: Request) {
