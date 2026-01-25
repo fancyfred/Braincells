@@ -352,5 +352,12 @@ export const topics: Topic[] = [
     emoji: '🍔',
     mood: 'obscure',
   },
+  {
+    slug: 'composers',
+    title: 'Composers Facts',
+    description: 'Fascinating facts about classical and contemporary composers, their lives, works, innovations, eccentricities, and the stories behind some of the world\'s most famous musical compositions.',
+    emoji: '🎼',
+    mood: 'niche',
+  },
 ];
 

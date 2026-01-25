@@ -66,6 +66,7 @@ const topicNames: Record<string, string> = {
   'austronesian-migration': 'the Austronesian migration',
   'dutch-empire': 'the Dutch Empire',
   'obscure-fast-food': 'obscure fast food',
+  'composers': 'composers',
 };
 
 export function RandomFact({ className }: RandomFactProps) {
