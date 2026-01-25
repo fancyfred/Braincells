@@ -61,6 +61,10 @@ const topicNames: Record<string, string> = {
   'memes': 'memes',
   'bamboo': 'bamboo',
   'technology-timeline': 'the technology timeline',
+  'latitude-longitude': 'latitude and longitude',
+  'greenland': 'Greenland',
+  'austronesian-migration': 'the Austronesian migration',
+  'dutch-empire': 'the Dutch Empire',
 };
 
 export function RandomFact({ className }: RandomFactProps) {
@@ -73,8 +77,9 @@ export function RandomFact({ className }: RandomFactProps) {
   const isProcessingRef = useRef<boolean>(false);
   const factFeedActiveRef = useRef<boolean>(false);
   const previousTopicRef = useRef<string | null>(null);
+  const recentlyPlayedFactsRef = useRef<string[]>([]); // Track last 5 facts to prevent repeats
 
-  // Load selected topics from localStorage
+  // Load selected topics and fact feed state from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('fact-feed-topics');
     if (saved) {
@@ -89,6 +94,16 @@ export function RandomFact({ className }: RandomFactProps) {
       // Default to all topics if nothing saved
       setSelectedTopics(new Set(topics.map((t: Topic) => t.slug)));
     }
+
+    // Restore fact feed state from localStorage
+    const savedFactFeedState = localStorage.getItem('fact-feed-active');
+    if (savedFactFeedState === 'true') {
+      // Use setTimeout to ensure state is set after initial render
+      setTimeout(() => {
+        setFactFeedMode(true);
+        factFeedActiveRef.current = true;
+      }, 0);
+    }
   }, []);
 
   // Initialize TTS service
@@ -96,7 +111,7 @@ export function RandomFact({ className }: RandomFactProps) {
     ttsServiceRef.current = getTTSService();
   }, []);
 
-  const fetchRandomFact = useCallback(async () => {
+  const fetchRandomFact = useCallback(async (retryCount = 0): Promise<FactData> => {
     setLoading(true);
     // Fetch from selected topics only
     try {
@@ -104,6 +119,20 @@ export function RandomFact({ className }: RandomFactProps) {
       const url = topicsParam ? `/api/random-fact?topics=${encodeURIComponent(topicsParam)}` : '/api/random-fact';
       const response = await fetch(url);
       const data = await response.json();
+      
+      // Check if this fact was recently played (prevent immediate repeats)
+      const maxRetries = 10; // Prevent infinite loops
+      if (recentlyPlayedFactsRef.current.includes(data.fact) && retryCount < maxRetries) {
+        // This fact was recently played, fetch again
+        return await fetchRandomFact(retryCount + 1);
+      }
+      
+      // Add this fact to recently played list (keep last 5)
+      recentlyPlayedFactsRef.current.push(data.fact);
+      if (recentlyPlayedFactsRef.current.length > 5) {
+        recentlyPlayedFactsRef.current.shift(); // Remove oldest
+      }
+      
       setFact(data);
       return data;
     } catch (error) {
@@ -122,6 +151,8 @@ export function RandomFact({ className }: RandomFactProps) {
     localStorage.setItem('fact-feed-topics', JSON.stringify(Array.from(newTopics)));
     // Reset previous topic when topics change
     previousTopicRef.current = null;
+    // Clear recently played facts when topics change (fresh start for new selection)
+    recentlyPlayedFactsRef.current = [];
     // If fact feed is active, it will use the new selection on next fetch
   };
 
@@ -398,21 +429,38 @@ export function RandomFact({ className }: RandomFactProps) {
     playFactAndContinue();
   }, [fact, factFeedMode, fetchRandomFact]);
 
-  // Cleanup: stop speech when component unmounts or mode changes
+  // Cleanup: only stop speech when component unmounts if fact feed is not active
+  // This allows the fact feed to continue across navigation
   useEffect(() => {
     return () => {
-      ttsServiceRef.current?.cancel();
+      // Only cancel if fact feed is not active (user intentionally stopped it)
+      // If fact feed is active, let it continue - it will be restored on remount
+      if (!factFeedActiveRef.current) {
+        ttsServiceRef.current?.cancel();
+      }
     };
   }, []);
 
   const toggleFactFeed = () => {
-    // Stop any current speech
-    ttsServiceRef.current?.cancel();
-    // Reset processing flag
-    isProcessingRef.current = false;
-    // Reset previous topic when toggling fact feed
-    previousTopicRef.current = null;
-    setFactFeedMode(!factFeedMode);
+    const newMode = !factFeedMode;
+    // Stop any current speech only if turning off
+    if (!newMode) {
+      ttsServiceRef.current?.cancel();
+      // Reset processing flag
+      isProcessingRef.current = false;
+      // Reset previous topic when toggling fact feed
+      previousTopicRef.current = null;
+      // Clear recently played facts when turning off
+      recentlyPlayedFactsRef.current = [];
+      // Clear from localStorage
+      localStorage.removeItem('fact-feed-active');
+    } else {
+      // Save to localStorage when turning on
+      localStorage.setItem('fact-feed-active', 'true');
+      // Clear recently played facts when starting fresh
+      recentlyPlayedFactsRef.current = [];
+    }
+    setFactFeedMode(newMode);
   };
 
   return (

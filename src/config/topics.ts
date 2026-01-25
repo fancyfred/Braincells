@@ -317,5 +317,33 @@ export const topics: Topic[] = [
     emoji: '📱',
     mood: 'general',
   },
+  {
+    slug: 'latitude-longitude',
+    title: 'Latitude and Longitude Facts',
+    description: 'Fascinating facts about latitude and longitude, how coordinate systems work, the history of navigation, GPS technology, and how these two numbers can pinpoint any location on Earth.',
+    emoji: '🌍',
+    mood: 'niche',
+  },
+  {
+    slug: 'greenland',
+    title: 'Greenland Facts',
+    description: 'Fascinating facts about Greenland, the world\'s largest island, its massive ice sheet, unique culture, extreme climate, and the challenges and wonders of living in the Arctic.',
+    emoji: '🧊',
+    mood: 'niche',
+  },
+  {
+    slug: 'austronesian-migration',
+    title: 'Austronesian Migration Facts',
+    description: 'Fascinating facts about the Austronesian migration, one of the most extensive human migrations in history, spreading across the Pacific and Indian Oceans from Taiwan to Madagascar, Easter Island, and New Zealand.',
+    emoji: '🛶',
+    mood: 'niche',
+  },
+  {
+    slug: 'dutch-empire',
+    title: 'Dutch Empire Facts',
+    description: 'Fascinating facts about the Dutch Empire, one of the largest colonial empires in history, spanning from the 17th to 20th century, with the Dutch East India Company, global trade dominance, and colonies across five continents.',
+    emoji: '🇳🇱',
+    mood: 'general',
+  },
 ];
 

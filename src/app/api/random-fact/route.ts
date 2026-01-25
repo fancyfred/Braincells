@@ -43,6 +43,10 @@ import { simpsonsFacts } from '@/data/simpsons';
 import { memesFacts } from '@/data/memes';
 import { bambooFacts } from '@/data/bamboo';
 import { technologyTimelineFacts } from '@/data/technology-timeline';
+import { latitudeLongitudeFacts } from '@/data/latitude-longitude';
+import { greenlandFacts } from '@/data/greenland';
+import { austronesianMigrationFacts } from '@/data/austronesian-migration';
+import { dutchEmpireFacts } from '@/data/dutch-empire';
 import { Fact } from '@/types/fact';
 
 // Combine all facts with their topic information
@@ -96,6 +100,10 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...memesFacts.map(f => ({ fact: f, topic: 'memes' })),
   ...bambooFacts.map(f => ({ fact: f, topic: 'bamboo' })),
   ...technologyTimelineFacts.map(f => ({ fact: f, topic: 'technology-timeline' })),
+  ...latitudeLongitudeFacts.map(f => ({ fact: f, topic: 'latitude-longitude' })),
+  ...greenlandFacts.map(f => ({ fact: f, topic: 'greenland' })),
+  ...austronesianMigrationFacts.map(f => ({ fact: f, topic: 'austronesian-migration' })),
+  ...dutchEmpireFacts.map(f => ({ fact: f, topic: 'dutch-empire' })),
 ];
 
 export async function GET(request: Request) {

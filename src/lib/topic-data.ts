@@ -42,6 +42,10 @@ import { simpsonsFacts } from '@/data/simpsons';
 import { memesFacts } from '@/data/memes';
 import { bambooFacts } from '@/data/bamboo';
 import { technologyTimelineFacts } from '@/data/technology-timeline';
+import { latitudeLongitudeFacts } from '@/data/latitude-longitude';
+import { greenlandFacts } from '@/data/greenland';
+import { austronesianMigrationFacts } from '@/data/austronesian-migration';
+import { dutchEmpireFacts } from '@/data/dutch-empire';
 import { Fact } from '@/types/fact';
 import { topics } from '@/config/topics';
 
@@ -90,5 +94,9 @@ export const topicData: Record<string, { facts: Fact[]; title: string; descripti
   memes: { facts: memesFacts, title: 'Memes Facts', description: topics.find(t => t.slug === 'memes')?.description || '' },
   bamboo: { facts: bambooFacts, title: 'Bamboo Facts', description: topics.find(t => t.slug === 'bamboo')?.description || '' },
   'technology-timeline': { facts: technologyTimelineFacts, title: 'Technology Timeline Facts', description: topics.find(t => t.slug === 'technology-timeline')?.description || '' },
+  'latitude-longitude': { facts: latitudeLongitudeFacts, title: 'Latitude and Longitude Facts', description: topics.find(t => t.slug === 'latitude-longitude')?.description || '' },
+  greenland: { facts: greenlandFacts, title: 'Greenland Facts', description: topics.find(t => t.slug === 'greenland')?.description || '' },
+  'austronesian-migration': { facts: austronesianMigrationFacts, title: 'Austronesian Migration Facts', description: topics.find(t => t.slug === 'austronesian-migration')?.description || '' },
+  'dutch-empire': { facts: dutchEmpireFacts, title: 'Dutch Empire Facts', description: topics.find(t => t.slug === 'dutch-empire')?.description || '' },
 };
 
