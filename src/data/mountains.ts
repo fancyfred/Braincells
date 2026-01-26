@@ -98,12 +98,20 @@ export const mountainsFacts: Fact[] = [
     tags: ['wind patterns', 'climate', 'circulation'],
   },
   {
-    text: 'The tallest mountains on each continent are called the "Seven Summits," a challenge that many mountaineers attempt to complete.',
-    tags: ['seven summits', 'mountaineering', 'challenge'],
+    text: 'The tallest mountains on each continent are called the "Seven Summits": Mount Everest (Asia), Aconcagua (South America), Denali (North America), Mount Kilimanjaro (Africa), Mount Elbrus (Europe), Vinson Massif (Antarctica), and Puncak Jaya (Oceania).',
+    tags: ['seven summits', 'mount everest', 'aconcagua', 'denali', 'mount kilimanjaro', 'mount elbrus', 'vinson massif', 'puncak jaya', 'mountaineering', 'challenge'],
   },
   {
     text: 'Mountains are home to unique species adapted to harsh conditions, including snow leopards, mountain goats, and high-altitude plants.',
     tags: ['wildlife', 'adaptation', 'biodiversity'],
+  },
+  {
+    text: 'Mount Etna in Sicily, also known as Mongibello, is Europe\'s tallest active volcano at 10,912 feet and one of the most active volcanoes in the world, erupting frequently with spectacular lava flows.',
+    tags: ['mount etna', 'mongibello', 'volcano', 'italy', 'sicily', 'eruptions'],
+  },
+  {
+    text: 'The Five Great Mountains of China, known as Wuyue, are five sacred peaks that have been important pilgrimage sites for over 2,000 years: Mount Tai (East), Mount Hua (West), Mount Heng (North), Mount Heng (South), and Mount Song (Center).',
+    tags: ['five great mountains', 'wuyue', 'china', 'sacred mountains', 'pilgrimage'],
   },
 ];
 
