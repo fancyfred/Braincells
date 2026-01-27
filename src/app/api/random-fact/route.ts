@@ -47,7 +47,7 @@ import { latitudeLongitudeFacts } from '@/data/latitude-longitude';
 import { greenlandFacts } from '@/data/greenland';
 import { austronesianMigrationFacts } from '@/data/austronesian-migration';
 import { dutchEmpireFacts } from '@/data/dutch-empire';
-import { obscureFastFoodFacts } from '@/data/obscure-fast-food';
+import { fastFoodChainsFacts } from '@/data/fast-food-chains';
 import { composersFacts } from '@/data/composers';
 import { Fact } from '@/types/fact';
 
@@ -106,7 +106,7 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...greenlandFacts.map(f => ({ fact: f, topic: 'greenland' })),
   ...austronesianMigrationFacts.map(f => ({ fact: f, topic: 'austronesian-migration' })),
   ...dutchEmpireFacts.map(f => ({ fact: f, topic: 'dutch-empire' })),
-  ...obscureFastFoodFacts.map(f => ({ fact: f, topic: 'obscure-fast-food' })),
+  ...fastFoodChainsFacts.map(f => ({ fact: f, topic: 'fast-food-chains' })),
   ...composersFacts.map(f => ({ fact: f, topic: 'composers' })),
 ];
 

@@ -346,9 +346,9 @@ export const topics: Topic[] = [
     mood: 'general',
   },
   {
-    slug: 'obscure-fast-food',
-    title: 'Obscure Fast Food Facts',
-    description: 'Fascinating facts about obscure fast food chains, regional favorites, secret menus, discontinued items, unusual menu creations, and the hidden world of fast food beyond the major chains.',
+    slug: 'fast-food-chains',
+    title: 'Fast Food Chains Facts',
+    description: 'Fascinating facts about fast food chains, regional favorites, secret menus, discontinued items, unusual menu creations, and the hidden world of fast food beyond the major chains.',
     emoji: '🍔',
     mood: 'obscure',
   },
@@ -358,6 +358,13 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about classical and contemporary composers, their lives, works, innovations, eccentricities, and the stories behind some of the world\'s most famous musical compositions.',
     emoji: '🎼',
     mood: 'niche',
+  },
+  {
+    slug: 'oil',
+    title: 'Oil Facts',
+    description: 'Fascinating facts about oil, petroleum, the oil industry, drilling, refining, global trade, and how this vital resource has shaped the modern world.',
+    emoji: '🛢️',
+    mood: 'general',
   },
 ];
 

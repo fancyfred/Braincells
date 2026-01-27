@@ -65,7 +65,7 @@ const topicNames: Record<string, string> = {
   'greenland': 'Greenland',
   'austronesian-migration': 'the Austronesian migration',
   'dutch-empire': 'the Dutch Empire',
-  'obscure-fast-food': 'obscure fast food',
+  'fast-food-chains': 'fast food chains',
   'composers': 'composers',
 };
 

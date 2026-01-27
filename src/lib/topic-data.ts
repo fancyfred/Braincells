@@ -46,8 +46,9 @@ import { latitudeLongitudeFacts } from '@/data/latitude-longitude';
 import { greenlandFacts } from '@/data/greenland';
 import { austronesianMigrationFacts } from '@/data/austronesian-migration';
 import { dutchEmpireFacts } from '@/data/dutch-empire';
-import { obscureFastFoodFacts } from '@/data/obscure-fast-food';
+import { fastFoodChainsFacts } from '@/data/fast-food-chains';
 import { composersFacts } from '@/data/composers';
+import { oilFacts } from '@/data/oil';
 import { Fact } from '@/types/fact';
 import { topics } from '@/config/topics';
 
@@ -100,7 +101,8 @@ export const topicData: Record<string, { facts: Fact[]; title: string; descripti
   greenland: { facts: greenlandFacts, title: 'Greenland Facts', description: topics.find(t => t.slug === 'greenland')?.description || '' },
   'austronesian-migration': { facts: austronesianMigrationFacts, title: 'Austronesian Migration Facts', description: topics.find(t => t.slug === 'austronesian-migration')?.description || '' },
   'dutch-empire': { facts: dutchEmpireFacts, title: 'Dutch Empire Facts', description: topics.find(t => t.slug === 'dutch-empire')?.description || '' },
-  'obscure-fast-food': { facts: obscureFastFoodFacts, title: 'Obscure Fast Food Facts', description: topics.find(t => t.slug === 'obscure-fast-food')?.description || '' },
+  'fast-food-chains': { facts: fastFoodChainsFacts, title: 'Fast Food Chains Facts', description: topics.find(t => t.slug === 'fast-food-chains')?.description || '' },
   composers: { facts: composersFacts, title: 'Composers Facts', description: topics.find(t => t.slug === 'composers')?.description || '' },
+  oil: { facts: oilFacts, title: 'Oil Facts', description: topics.find(t => t.slug === 'oil')?.description || '' },
 };
 

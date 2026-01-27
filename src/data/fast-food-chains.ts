@@ -1,6 +1,6 @@
 import { Fact } from '@/types/fact';
 
-export const obscureFastFoodFacts: Fact[] = [
+export const fastFoodChainsFacts: Fact[] = [
   { text: 'White Castle, founded in 1921, is considered the world\'s first fast food hamburger chain — it predates McDonald\'s by 19 years and invented the hamburger bun, the assembly line kitchen, and the concept of selling hamburgers by the sack.', tags: ['white castle', '1921', 'first', 'hamburger chain', 'mcdonalds', 'invention'] },
   { text: 'Krystal, a Southern fast food chain, is White Castle\'s main competitor and was founded in 1932 — both chains serve tiny square hamburgers called "sliders," and there\'s a long-standing rivalry between fans of the two chains over which makes the better burger.', tags: ['krystal', '1932', 'southern', 'sliders', 'rivalry', 'white castle'] },
   { text: 'In-N-Out Burger has a "secret menu" with items not listed on the regular menu — popular secret items include "Animal Style" (burger with grilled onions, pickles, and special sauce), "Protein Style" (burger wrapped in lettuce instead of a bun), and "Flying Dutchman" (just two patties and two slices of cheese).', tags: ['in-n-out', 'secret menu', 'animal style', 'protein style', 'flying dutchman', 'not listed'] },
