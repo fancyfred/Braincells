@@ -1,15 +1,15 @@
 import { Fact } from '@/types/fact';
 
 export const organsFacts: Fact[] = [
-  { text: 'The human body has 78 organs, including the heart, lungs, liver, kidneys, brain, and many others that work together to keep you alive.', tags: ['overview', 'statistics', 'organs', 'body'] },
-  { text: 'Your heart beats about 100,000 times per day, pumping approximately 2,000 gallons of blood through your body every 24 hours.', tags: ['heart', 'circulation', 'blood', 'statistics'] },
-  { text: 'The liver is the largest internal organ and can regenerate itself — you can lose up to 75% of your liver and it will grow back to full size.', tags: ['liver', 'regeneration', 'largest', 'healing'] },
-  { text: 'Your lungs contain about 300 million tiny air sacs called alveoli, which if spread out flat would cover an area the size of a tennis court.', tags: ['lungs', 'alveoli', 'surface area', 'respiration'] },
-  { text: 'The small intestine is about 20 feet long, while the large intestine is only about 5 feet long — despite their names, the "small" intestine is actually much longer!', tags: ['intestines', 'digestion', 'length', 'anatomy'] },
-  { text: 'Your kidneys filter about 200 quarts of blood every day, removing waste and excess water to produce about 1-2 quarts of urine.', tags: ['kidneys', 'filtration', 'urine', 'waste removal'] },
-  { text: 'The brain uses about 20% of your body\'s total energy and oxygen, even though it only makes up about 2% of your body weight.', tags: ['brain', 'energy', 'oxygen', 'metabolism'] },
-  { text: 'Your skin is the largest organ in the human body, covering an average of about 20 square feet and weighing around 8 pounds.', tags: ['skin', 'largest organ', 'surface area', 'weight'] },
-  { text: 'The stomach produces about 2-3 liters of gastric acid every day to help break down food — this acid is strong enough to dissolve metal, but your stomach lining protects you.', tags: ['stomach', 'gastric acid', 'digestion', 'protection'] },
-  { text: 'Your spleen filters old or damaged red blood cells from your bloodstream and stores platelets and white blood cells for when your body needs them.', tags: ['spleen', 'blood cells', 'filtration', 'immune system'] },
+  { text: 'The human body has 78 organs, including the heart, lungs, liver, kidneys, brain, and many others that work together to keep you alive.' },
+  { text: 'Your heart beats about 100,000 times per day, pumping approximately 2,000 gallons of blood through your body every 24 hours.' },
+  { text: 'The liver is the largest internal organ and can regenerate itself — you can lose up to 75% of your liver and it will grow back to full size.' },
+  { text: 'Your lungs contain about 300 million tiny air sacs called alveoli, which if spread out flat would cover an area the size of a tennis court.' },
+  { text: 'The small intestine is about 20 feet long, while the large intestine is only about 5 feet long — despite their names, the "small" intestine is actually much longer!' },
+  { text: 'Your kidneys filter about 200 quarts of blood every day, removing waste and excess water to produce about 1-2 quarts of urine.' },
+  { text: 'The brain uses about 20% of your body\'s total energy and oxygen, even though it only makes up about 2% of your body weight.' },
+  { text: 'Your skin is the largest organ in the human body, covering an average of about 20 square feet and weighing around 8 pounds.' },
+  { text: 'The stomach produces about 2-3 liters of gastric acid every day to help break down food — this acid is strong enough to dissolve metal, but your stomach lining protects you.' },
+  { text: 'Your spleen filters old or damaged red blood cells from your bloodstream and stores platelets and white blood cells for when your body needs them.' },
 ];
 

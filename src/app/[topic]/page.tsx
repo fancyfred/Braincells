@@ -1,22 +1,21 @@
 import { Metadata } from 'next';
-import { redirect, notFound } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { SiteLayout } from '@/components/layout';
+import { Breadcrumbs } from '@/components/breadcrumbs';
 import { FactList } from '@/components/fact-list';
-import { FactFilter } from '@/components/fact-filter';
-import { LayoutSelector } from '@/components/layout-selector';
 import { topicData } from '@/lib/topic-data';
-import { UNSPLASH_DISABLED } from '@/config/images';
+import { topics } from '@/config/topics';
 
 export async function generateMetadata({ params }: { params: Promise<{ topic: string }> }): Promise<Metadata> {
   const { topic } = await params;
   const topicInfo = topicData[topic];
-  
+
   if (!topicInfo) {
     return {
       title: 'Topic Not Found',
     };
   }
-  
+
   return {
     title: topicInfo.title,
     description: topicInfo.description,
@@ -28,49 +27,62 @@ export default async function Page({
   searchParams,
 }: {
   params: Promise<{ topic: string }>;
-  searchParams: Promise<{ tag?: string }> | { tag?: string };
+  searchParams: Promise<{ fact?: string }> | { fact?: string };
 }) {
   const { topic } = await params;
   const topicInfo = topicData[topic];
-  
+
   if (!topicInfo) {
     notFound();
   }
-  
-  const searchParamsResolved = await Promise.resolve(searchParams);
-  const selectedTag = searchParamsResolved.tag || '';
-  const tags = Array.from(new Set(topicInfo.facts.flatMap((fact) => fact.tags))).sort();
 
-  // Only redirect to first tag if Unsplash is enabled (to avoid loading too many images)
-  // If Unsplash is disabled, allow showing all facts with no filter
-  if (!selectedTag && tags.length > 0 && !UNSPLASH_DISABLED) {
-    redirect(`/${topic}?tag=${encodeURIComponent(tags[0])}`);
-  }
+  const searchParamsResolved = await Promise.resolve(searchParams);
+  const factParam = searchParamsResolved.fact;
+  const hasFactParam = factParam !== undefined && factParam !== '';
+  const factIndex = Math.max(0, parseInt(factParam ?? '0', 10) || 0);
+  const clampedIndex = Math.min(factIndex, topicInfo.facts.length - 1);
+
+  const topicConfig = topics.find((t) => t.slug === topic);
+  const moodLabel =
+    topicConfig?.mood === 'general'
+      ? 'General'
+      : topicConfig?.mood === 'niche'
+        ? 'Niche'
+        : topicConfig?.mood === 'obscure'
+          ? 'Obscure'
+          : null;
+  const topicListHref = `/${topic}`;
+  const breadcrumbItems = moodLabel
+    ? [
+        { label: 'Browse', href: '/browse' },
+        { label: moodLabel, href: `/browse?mood=${topicConfig!.mood}` },
+        { label: topicInfo.title, href: hasFactParam ? topicListHref : undefined },
+      ]
+    : [
+        { label: 'Browse', href: '/browse' },
+        { label: topicInfo.title, href: hasFactParam ? topicListHref : undefined },
+      ];
 
   return (
     <SiteLayout>
       <section className="shell">
+        <Breadcrumbs items={breadcrumbItems} />
         <h1>{topicInfo.title}</h1>
-        <LayoutSelector />
+        {hasFactParam && (
+          <p className="topic-fact-counter" aria-live="polite">
+            {clampedIndex + 1} / {topicInfo.facts.length}
+          </p>
+        )}
         <div className="facts-layout">
-          <aside className="facts-sidebar filter-left">
-            <FactFilter facts={topicInfo.facts} selectedTag={selectedTag} />
-          </aside>
-          <aside className="facts-sidebar filter-right">
-            <FactFilter facts={topicInfo.facts} selectedTag={selectedTag} />
-          </aside>
-          <aside className="facts-sidebar filter-top">
-            <FactFilter facts={topicInfo.facts} selectedTag={selectedTag} />
-          </aside>
-          <main className="facts-content">
-            <FactList facts={topicInfo.facts} selectedTag={selectedTag} />
+          <main className="facts-content facts-content-full">
+            <FactList
+              facts={topicInfo.facts}
+              currentFactIndex={clampedIndex}
+              singleFactView={hasFactParam}
+            />
           </main>
-          <aside className="facts-sidebar filter-bottom">
-            <FactFilter facts={topicInfo.facts} selectedTag={selectedTag} />
-          </aside>
         </div>
       </section>
     </SiteLayout>
   );
 }
-

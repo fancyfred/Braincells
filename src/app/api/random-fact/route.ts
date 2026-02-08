@@ -136,8 +136,7 @@ export async function GET(request: Request) {
   
   return NextResponse.json({
     fact: selected.fact.text,
-    tags: selected.fact.tags,
-    topic: selected.topic, // Return the actual topic of the fact
+    topic: selected.topic,
   });
 }
 
