@@ -1,4 +1,5 @@
 import { FactMood } from '@/types/mood';
+import type { CategorySlug } from '@/config/categories';
 
 export interface Topic {
   slug: string;
@@ -6,6 +7,7 @@ export interface Topic {
   description: string;
   emoji: string;
   mood: FactMood;
+  category: CategorySlug;
 }
 
 export const topics: Topic[] = [
@@ -15,6 +17,7 @@ export const topics: Topic[] = [
     description: 'Fun facts about brain cells, neurons, and how your brain works.',
     emoji: '🧠',
     mood: 'general',
+    category: 'science',
   },
   {
     slug: 'coffee',
@@ -22,6 +25,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about coffee, caffeine, brewing methods, and coffee culture around the world.',
     emoji: '☕',
     mood: 'general',
+    category: 'food',
   },
   {
     slug: 'greek-mythology',
@@ -29,6 +33,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about Greek gods, heroes, monsters, and the epic stories that shaped Western culture.',
     emoji: '⚡',
     mood: 'niche',
+    category: 'culture',
   },
   {
     slug: 'space',
@@ -36,6 +41,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about space, planets, stars, black holes, astronauts, and the universe beyond Earth.',
     emoji: '🚀',
     mood: 'general',
+    category: 'science',
   },
   {
     slug: 'electricity',
@@ -43,6 +49,7 @@ export const topics: Topic[] = [
     description: 'Shocking facts about electricity, lightning, energy, and how electrical power works.',
     emoji: '⚡',
     mood: 'general',
+    category: 'science',
   },
   {
     slug: 'mining',
@@ -50,6 +57,7 @@ export const topics: Topic[] = [
     description: 'Dig deep into fascinating facts about mining, minerals, geology, and the history of extracting resources from the Earth.',
     emoji: '⛏️',
     mood: 'niche',
+    category: 'misc',
   },
   {
     slug: 'engines',
@@ -57,6 +65,7 @@ export const topics: Topic[] = [
     description: 'Rev up your knowledge with fascinating facts about engines, how they work, automotive history, and engine technology.',
     emoji: '🔧',
     mood: 'niche',
+    category: 'misc',
   },
   {
     slug: 'supercars',
@@ -64,6 +73,7 @@ export const topics: Topic[] = [
     description: 'Speed into fascinating facts about supercars, hypercars, legendary brands, and the world\'s most extreme automobiles.',
     emoji: '🏎️',
     mood: 'niche',
+    category: 'misc',
   },
   {
     slug: 'movie-quotes',
@@ -71,6 +81,7 @@ export const topics: Topic[] = [
     description: 'Discover fascinating facts about famous movie quotes, their origins, misquotes, cultural impact, and the stories behind iconic lines.',
     emoji: '🎬',
     mood: 'obscure',
+    category: 'entertainment',
   },
   {
     slug: 'beer',
@@ -78,6 +89,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about beer, brewing, history, culture, styles, and everything you need to know about the world\'s oldest alcoholic beverage.',
     emoji: '🍺',
     mood: 'niche',
+    category: 'food',
   },
   {
     slug: 'whiskey',
@@ -85,6 +97,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about whiskey styles, grains, aging, barrels, regions, and the craft behind great pours.',
     emoji: '🥃',
     mood: 'niche',
+    category: 'food',
   },
   {
     slug: 'cocktails',
@@ -92,6 +105,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about cocktails, their history, recipes, famous drinks, bartending techniques, and the stories behind iconic mixed drinks.',
     emoji: '🍸',
     mood: 'niche',
+    category: 'food',
   },
   {
     slug: 'presidents',
@@ -99,6 +113,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about U.S. presidents, their powers, history, and the presidency.',
     emoji: '🇺🇸',
     mood: 'general',
+    category: 'history',
   },
   {
     slug: 'cars',
@@ -106,6 +121,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about cars, automotive history, manufacturing, and how automobiles work.',
     emoji: '🚗',
     mood: 'general',
+    category: 'misc',
   },
   {
     slug: 'bible',
@@ -113,6 +129,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about the Bible, its structure, history, translations, and literary content.',
     emoji: '📖',
     mood: 'general',
+    category: 'culture',
   },
   {
     slug: 'organs',
@@ -120,6 +137,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about human body organs, their functions, anatomy, and how they work together.',
     emoji: '🫀',
     mood: 'general',
+    category: 'science',
   },
   {
     slug: 'planes',
@@ -127,6 +145,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about airplanes, aviation history, flight technology, and how planes work.',
     emoji: '✈️',
     mood: 'general',
+    category: 'misc',
   },
   {
     slug: 'world-leaders',
@@ -134,6 +153,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about world leaders, historical figures, and influential political leaders throughout history.',
     emoji: '👑',
     mood: 'general',
+    category: 'history',
   },
   {
     slug: 'elements',
@@ -141,6 +161,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about chemical elements, the periodic table, and the building blocks of matter.',
     emoji: '⚛️',
     mood: 'general',
+    category: 'science',
   },
   {
     slug: 'philosophy',
@@ -148,13 +169,15 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about philosophy, famous philosophers, and the great ideas that have shaped human thought.',
     emoji: '🤔',
     mood: 'general',
+    category: 'culture',
   },
   {
-    slug: 'seinfeld',
-    title: 'Seinfeld Facts',
-    description: 'Fascinating facts about Seinfeld, the iconic sitcom, its characters, episodes, and behind-the-scenes stories.',
-    emoji: '📺',
-    mood: 'obscure',
+    slug: 'human-body',
+    title: 'Human Body Facts',
+    description: 'Fascinating facts about the human body, anatomy, physiology, and how our bodies work.',
+    emoji: '🧍',
+    mood: 'general',
+    category: 'science',
   },
   {
     slug: 'olympics',
@@ -162,6 +185,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about the Olympic Games, its history, athletes, records, and the world\'s greatest sporting event.',
     emoji: '🏅',
     mood: 'general',
+    category: 'misc',
   },
   {
     slug: 'internet',
@@ -169,6 +193,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about the internet, its history, development, and how it has transformed the world.',
     emoji: '🌐',
     mood: 'general',
+    category: 'technology',
   },
   {
     slug: 'octopi',
@@ -176,6 +201,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about octopuses, their intelligence, anatomy, behavior, and incredible abilities.',
     emoji: '🐙',
     mood: 'general',
+    category: 'nature',
   },
   {
     slug: 'snakes',
@@ -183,6 +209,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about snakes, their anatomy, behavior, venom, and incredible adaptations.',
     emoji: '🐍',
     mood: 'general',
+    category: 'nature',
   },
   {
     slug: 'sharks',
@@ -190,6 +217,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about sharks, their anatomy, behavior, and incredible adaptations.',
     emoji: '🦈',
     mood: 'general',
+    category: 'nature',
   },
   {
     slug: 'oceans',
@@ -197,6 +225,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about the world\'s oceans, their depths, currents, and importance to life on Earth.',
     emoji: '🌊',
     mood: 'general',
+    category: 'nature',
   },
   {
     slug: 'mountains',
@@ -204,6 +233,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about mountains, their formation, height records, and impact on climate and ecosystems.',
     emoji: '⛰️',
     mood: 'general',
+    category: 'nature',
   },
   {
     slug: 'ancient-egypt',
@@ -211,6 +241,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about ancient Egypt, pharaohs, pyramids, hieroglyphs, and one of history\'s greatest civilizations.',
     emoji: '🏺',
     mood: 'general',
+    category: 'history',
   },
   {
     slug: 'chocolate',
@@ -218,6 +249,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about chocolate, its history, production, health benefits, and cultural significance.',
     emoji: '🍫',
     mood: 'general',
+    category: 'food',
   },
   {
     slug: 'spices',
@@ -225,6 +257,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about spices, the spice trade, their history, and how they shaped world exploration.',
     emoji: '🌶️',
     mood: 'general',
+    category: 'food',
   },
   {
     slug: 'art',
@@ -232,6 +265,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about art, famous artists, art movements, techniques, and masterpieces throughout history.',
     emoji: '🎨',
     mood: 'general',
+    category: 'culture',
   },
   {
     slug: 'operating-theatre',
@@ -239,6 +273,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about operating rooms, surgery, medical procedures, and the history of surgical medicine.',
     emoji: '🏥',
     mood: 'niche',
+    category: 'science',
   },
   {
     slug: 'ethiopian-tribes',
@@ -246,6 +281,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about Ethiopian tribes, their diverse cultures, traditions, languages, and unique ways of life.',
     emoji: '🏛️',
     mood: 'obscure',
+    category: 'culture',
   },
   {
     slug: 'denominations',
@@ -253,6 +289,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about religious denominations, their history, differences, beliefs, and how they developed over time.',
     emoji: '⛪',
     mood: 'general',
+    category: 'culture',
   },
   {
     slug: 'number-one-singles',
@@ -260,6 +297,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about number one singles, chart-topping hits, music records, and the artists who dominated the charts.',
     emoji: '🎵',
     mood: 'general',
+    category: 'entertainment',
   },
   {
     slug: 'ai',
@@ -267,6 +305,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about artificial intelligence, machine learning, AI history, and how AI is transforming the world.',
     emoji: '🤖',
     mood: 'general',
+    category: 'technology',
   },
   {
     slug: 'robots',
@@ -274,6 +313,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about robots, from industrial automation to humanoid robots, robotic surgery, and the future of robotics.',
     emoji: '🤖',
     mood: 'niche',
+    category: 'technology',
   },
   {
     slug: 'drones',
@@ -281,6 +321,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about drones, UAVs, their applications in delivery, agriculture, cinematography, and military use.',
     emoji: '🚁',
     mood: 'niche',
+    category: 'technology',
   },
   {
     slug: 'explorers',
@@ -288,6 +329,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about famous explorers, their journeys, discoveries, and the adventures that shaped our world.',
     emoji: '🗺️',
     mood: 'general',
+    category: 'history',
   },
   {
     slug: 'simpsons',
@@ -295,6 +337,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about The Simpsons, its characters, episodes, catchphrases, cultural impact, and behind-the-scenes stories from the longest-running animated series.',
     emoji: '🍩',
     mood: 'obscure',
+    category: 'entertainment',
   },
   {
     slug: 'memes',
@@ -302,6 +345,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about internet memes, their origins, evolution, cultural impact, and how they\'ve shaped digital culture and communication.',
     emoji: '😂',
     mood: 'obscure',
+    category: 'entertainment',
   },
   {
     slug: 'bamboo',
@@ -309,6 +353,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about bamboo, its incredible uses, weird properties, strength, growth speed, and how this versatile grass is used in everything from construction to technology.',
     emoji: '🎋',
     mood: 'niche',
+    category: 'nature',
   },
   {
     slug: 'technology-timeline',
@@ -316,6 +361,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts tracing the evolution of technology from punch cards and typewriters through to smartphones, mapping the incredible journey of computing and digital innovation.',
     emoji: '📱',
     mood: 'general',
+    category: 'technology',
   },
   {
     slug: 'latitude-longitude',
@@ -323,6 +369,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about latitude and longitude, how coordinate systems work, the history of navigation, GPS technology, and how these two numbers can pinpoint any location on Earth.',
     emoji: '🌍',
     mood: 'niche',
+    category: 'technology',
   },
   {
     slug: 'greenland',
@@ -330,6 +377,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about Greenland, the world\'s largest island, its massive ice sheet, unique culture, extreme climate, and the challenges and wonders of living in the Arctic.',
     emoji: '🧊',
     mood: 'niche',
+    category: 'nature',
   },
   {
     slug: 'austronesian-migration',
@@ -337,6 +385,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about the Austronesian migration, one of the most extensive human migrations in history, spreading across the Pacific and Indian Oceans from Taiwan to Madagascar, Easter Island, and New Zealand.',
     emoji: '🛶',
     mood: 'niche',
+    category: 'history',
   },
   {
     slug: 'dutch-empire',
@@ -344,6 +393,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about the Dutch Empire, one of the largest colonial empires in history, spanning from the 17th to 20th century, with the Dutch East India Company, global trade dominance, and colonies across five continents.',
     emoji: '🇳🇱',
     mood: 'general',
+    category: 'history',
   },
   {
     slug: 'fast-food-chains',
@@ -351,6 +401,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about fast food chains, regional favorites, secret menus, discontinued items, unusual menu creations, and the hidden world of fast food beyond the major chains.',
     emoji: '🍔',
     mood: 'obscure',
+    category: 'food',
   },
   {
     slug: 'composers',
@@ -358,6 +409,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about classical and contemporary composers, their lives, works, innovations, eccentricities, and the stories behind some of the world\'s most famous musical compositions.',
     emoji: '🎼',
     mood: 'niche',
+    category: 'entertainment',
   },
   {
     slug: 'oil',
@@ -365,6 +417,7 @@ export const topics: Topic[] = [
     description: 'Fascinating facts about oil, petroleum, the oil industry, drilling, refining, global trade, and how this vital resource has shaped the modern world.',
     emoji: '🛢️',
     mood: 'general',
+    category: 'misc',
   },
 ];
 

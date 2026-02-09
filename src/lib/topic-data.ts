@@ -18,7 +18,7 @@ import { planesFacts } from '@/data/planes';
 import { worldLeadersFacts } from '@/data/world-leaders';
 import { elementsFacts } from '@/data/elements';
 import { philosophyFacts } from '@/data/philosophy';
-import { seinfeldFacts } from '@/data/seinfeld';
+import { humanBodyFacts } from '@/data/human-body';
 import { olympicsFacts } from '@/data/olympics';
 import { internetFacts } from '@/data/internet';
 import { octopiFacts } from '@/data/octopi';
@@ -73,7 +73,7 @@ export const topicData: Record<string, { facts: Fact[]; title: string; descripti
   'world-leaders': { facts: worldLeadersFacts, title: 'World Leaders Facts', description: topics.find(t => t.slug === 'world-leaders')?.description || '' },
   elements: { facts: elementsFacts, title: 'Elements Facts', description: topics.find(t => t.slug === 'elements')?.description || '' },
   philosophy: { facts: philosophyFacts, title: 'Philosophy Facts', description: topics.find(t => t.slug === 'philosophy')?.description || '' },
-  seinfeld: { facts: seinfeldFacts, title: 'Seinfeld Facts', description: topics.find(t => t.slug === 'seinfeld')?.description || '' },
+  'human-body': { facts: humanBodyFacts, title: 'Human Body Facts', description: topics.find(t => t.slug === 'human-body')?.description || '' },
   olympics: { facts: olympicsFacts, title: 'Olympics Facts', description: topics.find(t => t.slug === 'olympics')?.description || '' },
   internet: { facts: internetFacts, title: 'The Internet Facts', description: topics.find(t => t.slug === 'internet')?.description || '' },
   octopi: { facts: octopiFacts, title: 'Octopus Facts', description: topics.find(t => t.slug === 'octopi')?.description || '' },

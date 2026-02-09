@@ -17,13 +17,25 @@ interface FactListProps {
   facts: Fact[];
   currentFactIndex: number;
   singleFactView?: boolean;
+  /** When set (e.g. on area page), fact links go here with ?fact=N. Use with originalIndices. */
+  linkBasePath?: string;
+  /** When set, list view uses these indices for ?fact=N (for linking into full topic from area view). */
+  originalIndices?: number[];
 }
 
-export function FactList({ facts, currentFactIndex: initialFactIndex, singleFactView = false }: FactListProps) {
+export function FactList({
+  facts,
+  currentFactIndex: initialFactIndex,
+  singleFactView = false,
+  linkBasePath,
+  originalIndices,
+}: FactListProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const currentFactRef = useRef<HTMLLIElement>(null);
+  /** True while this list started TTS (user clicked speak). Used so we only cancel our own speech on unmount, not the fact feed. */
+  const factListSpeakingRef = useRef(false);
 
   const [factsWithImages, setFactsWithImages] = useState<FactWithImage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,10 +112,12 @@ export function FactList({ facts, currentFactIndex: initialFactIndex, singleFact
     fetchImages();
   }, [facts, imagesEnabled, singleFactView, currentIndex]);
 
+  // Only cancel TTS on unmount/facts change if this list started it (speak button). Don't cancel the fact feed.
   useEffect(() => {
     return () => {
-      if (window.speechSynthesis) {
+      if (factListSpeakingRef.current && window.speechSynthesis) {
         window.speechSynthesis.cancel();
+        factListSpeakingRef.current = false;
       }
     };
   }, [facts]);
@@ -115,6 +129,10 @@ export function FactList({ facts, currentFactIndex: initialFactIndex, singleFact
     }
   }, [currentIndex]);
 
+  // Next/prev use full-topic fact index; when in area view use originalIndices so we cycle within area
+  const getFactParamForIndex = (indexInList: number): string | null =>
+    originalIndices != null ? String(originalIndices[indexInList]) : String(indexInList);
+
   // Left/Right arrow keys to move through facts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -124,8 +142,12 @@ export function FactList({ facts, currentFactIndex: initialFactIndex, singleFact
         if (currentIndex > 0) {
           e.preventDefault();
           const params = new URLSearchParams(searchParams.toString());
-          if (currentIndex <= 1) params.delete('fact');
-          else params.set('fact', String(currentIndex - 1));
+          if (originalIndices != null) {
+            params.set('fact', getFactParamForIndex(currentIndex - 1));
+          } else {
+            if (currentIndex <= 1) params.delete('fact');
+            else params.set('fact', String(currentIndex - 1));
+          }
           const qs = params.toString();
           router.push(`${pathname}${qs ? `?${qs}` : ''}` as any);
         }
@@ -133,26 +155,28 @@ export function FactList({ facts, currentFactIndex: initialFactIndex, singleFact
         if (currentIndex < facts.length - 1) {
           e.preventDefault();
           const params = new URLSearchParams(searchParams.toString());
-          params.set('fact', String(currentIndex + 1));
+          params.set('fact', getFactParamForIndex(currentIndex + 1));
           router.push(`${pathname}?${params.toString()}` as any);
         }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, facts.length, pathname, searchParams, router]);
+  }, [currentIndex, facts.length, pathname, searchParams, router, originalIndices]);
 
   const handleNextFact = () => {
     if (!canGoForward) return;
     const params = new URLSearchParams(searchParams.toString());
-    params.set('fact', String(currentIndex + 1));
+    params.set('fact', getFactParamForIndex(currentIndex + 1));
     router.push(`${pathname}?${params.toString()}` as any);
   };
 
   const handlePreviousFact = () => {
     if (!canGoBack) return;
     const params = new URLSearchParams(searchParams.toString());
-    if (currentIndex <= 1) {
+    if (originalIndices != null) {
+      params.set('fact', getFactParamForIndex(currentIndex - 1));
+    } else if (currentIndex <= 1) {
       params.delete('fact');
     } else {
       params.set('fact', String(currentIndex - 1));
@@ -167,6 +191,7 @@ export function FactList({ facts, currentFactIndex: initialFactIndex, singleFact
     }
 
     if (speakingIndex === index) {
+      factListSpeakingRef.current = false;
       setSpeakingIndex(null);
       return;
     }
@@ -175,6 +200,8 @@ export function FactList({ facts, currentFactIndex: initialFactIndex, singleFact
       alert('Text-to-speech is not supported in your browser.');
       return;
     }
+
+    factListSpeakingRef.current = true;
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1.0;
@@ -190,17 +217,25 @@ export function FactList({ facts, currentFactIndex: initialFactIndex, singleFact
 
       navigator.mediaSession.setActionHandler('pause', () => {
         window.speechSynthesis.cancel();
+        factListSpeakingRef.current = false;
         setSpeakingIndex(null);
       });
       navigator.mediaSession.setActionHandler('stop', () => {
         window.speechSynthesis.cancel();
+        factListSpeakingRef.current = false;
         setSpeakingIndex(null);
       });
     }
 
     utterance.onstart = () => setSpeakingIndex(index);
-    utterance.onend = () => setSpeakingIndex(null);
-    utterance.onerror = () => setSpeakingIndex(null);
+    utterance.onend = () => {
+      factListSpeakingRef.current = false;
+      setSpeakingIndex(null);
+    };
+    utterance.onerror = () => {
+      factListSpeakingRef.current = false;
+      setSpeakingIndex(null);
+    };
 
     window.speechSynthesis.speak(utterance);
     setSpeakingIndex(index);
@@ -267,7 +302,12 @@ export function FactList({ facts, currentFactIndex: initialFactIndex, singleFact
         <ul className={`fun-facts ${!singleFactView ? 'fun-facts-list-view' : ''}`}>
         {itemsToRender.map((item, index) => {
           const factNumber = singleFactView ? currentIndex + 1 : index + 1;
-          const factHref = `${pathname}?fact=${singleFactView ? currentIndex : index}`;
+          const basePath = linkBasePath ?? pathname;
+          const factIndexForLink =
+            singleFactView ? currentIndex : (originalIndices != null ? originalIndices[index] : index);
+          const factHref = basePath.includes('?')
+            ? `${basePath}&fact=${factIndexForLink}`
+            : `${basePath}?fact=${factIndexForLink}`;
           const isCurrent = singleFactView ? index === 0 : index === currentIndex;
 
           const factBody = (

@@ -19,7 +19,7 @@ import { planesFacts } from '@/data/planes';
 import { worldLeadersFacts } from '@/data/world-leaders';
 import { elementsFacts } from '@/data/elements';
 import { philosophyFacts } from '@/data/philosophy';
-import { seinfeldFacts } from '@/data/seinfeld';
+import { humanBodyFacts } from '@/data/human-body';
 import { olympicsFacts } from '@/data/olympics';
 import { internetFacts } from '@/data/internet';
 import { octopiFacts } from '@/data/octopi';
@@ -49,7 +49,8 @@ import { austronesianMigrationFacts } from '@/data/austronesian-migration';
 import { dutchEmpireFacts } from '@/data/dutch-empire';
 import { fastFoodChainsFacts } from '@/data/fast-food-chains';
 import { composersFacts } from '@/data/composers';
-import { Fact } from '@/types/fact';
+import { Fact, getFactArea } from '@/types/fact';
+import { topics } from '@/config/topics';
 
 // Combine all facts with their topic information
 interface FactWithTopic {
@@ -78,7 +79,7 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...worldLeadersFacts.map(f => ({ fact: f, topic: 'world-leaders' })),
   ...elementsFacts.map(f => ({ fact: f, topic: 'elements' })),
   ...philosophyFacts.map(f => ({ fact: f, topic: 'philosophy' })),
-  ...seinfeldFacts.map(f => ({ fact: f, topic: 'seinfeld' })),
+  ...humanBodyFacts.map(f => ({ fact: f, topic: 'human-body' })),
   ...olympicsFacts.map(f => ({ fact: f, topic: 'olympics' })),
   ...internetFacts.map(f => ({ fact: f, topic: 'internet' })),
   ...octopiFacts.map(f => ({ fact: f, topic: 'octopi' })),
@@ -133,10 +134,18 @@ export async function GET(request: Request) {
   // Get random fact
   const randomIndex = Math.floor(Math.random() * factsToChooseFrom.length);
   const selected = factsToChooseFrom[randomIndex];
-  
+  const topicConfig = topics.find(t => t.slug === selected.topic);
+  const mood = topicConfig?.mood ?? null;
+  const category = topicConfig?.category ?? null;
+  const areaRaw = getFactArea(selected.fact);
+  const area = areaRaw !== 'misc' ? areaRaw : null;
+
   return NextResponse.json({
     fact: selected.fact.text,
     topic: selected.topic,
+    ...(mood && { mood }),
+    ...(category && { category }),
+    ...(area && { area }),
   });
 }
 

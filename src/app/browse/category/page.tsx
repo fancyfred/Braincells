@@ -2,49 +2,61 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { SiteLayout } from '@/components/layout';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { MoodSelector } from '@/components/mood-selector';
+import { CategorySelector } from '@/components/category-selector';
 import { topics } from '@/config/topics';
-import { FactMood } from '@/types/mood';
-
-function moodLabel(mood: FactMood): string {
-  return mood === 'general' ? 'General' : mood === 'niche' ? 'Niche' : 'Obscure';
-}
+import { getCategoryLabel } from '@/config/categories';
+import type { CategorySlug } from '@/config/categories';
 
 export const metadata: Metadata = {
-  title: 'Browse facts | Fact Me App!',
-  description: 'Browse facts by topic. Choose a mood and explore.',
+  title: 'Browse by category | Fact Me App!',
+  description: 'Browse facts by category. Choose a category and explore topics.',
 };
 
-export default async function BrowsePage({
+const VALID_CATEGORIES: CategorySlug[] = [
+  'technology',
+  'science',
+  'nature',
+  'food',
+  'history',
+  'culture',
+  'entertainment',
+  'misc',
+];
+
+export default async function BrowseByCategoryPage({
   searchParams,
 }: {
-  searchParams: Promise<{ mood?: string }> | { mood?: string };
+  searchParams: Promise<{ cat?: string }> | { cat?: string };
 }) {
   const params = await Promise.resolve(searchParams);
-  const selectedMood = params.mood as FactMood | undefined;
+  const selectedCat = params.cat as CategorySlug | undefined;
 
   const filteredTopics =
-    selectedMood && ['general', 'niche', 'obscure'].includes(selectedMood)
-      ? topics.filter((topic) => topic.mood === selectedMood)
+    selectedCat && VALID_CATEGORIES.includes(selectedCat)
+      ? topics.filter((topic) => topic.category === selectedCat)
       : topics;
 
-  const breadcrumbItems = selectedMood
+  const categoryLabel = selectedCat ? getCategoryLabel(selectedCat) : null;
+  const breadcrumbItems = categoryLabel
     ? [
         { label: 'Browse', href: '/browse' },
-        { label: moodLabel(selectedMood) },
+        { label: 'By category', href: '/browse/category' },
+        { label: categoryLabel },
       ]
-    : [{ label: 'Browse' }];
+    : [
+        { label: 'Browse', href: '/browse' },
+        { label: 'By category' },
+      ];
 
   return (
     <SiteLayout>
       <section className="shell browse-page">
         <Breadcrumbs items={breadcrumbItems} />
-        <h1>Browse facts</h1>
+        <h1>Browse by category</h1>
         <p className="browse-intro">
-          Pick a topic and read through facts. Use the mood filter to narrow by interest.
-          Or <Link href="/browse/category" className="browse-alt-link">browse by category</Link>.
+          Pick a category to see topics. Use the filter to narrow by category.
         </p>
-        <MoodSelector />
+        <CategorySelector />
         <div className="topics-grid">
           {filteredTopics.map((topic) => (
             <Link

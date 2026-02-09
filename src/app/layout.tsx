@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { FactFeedProviderWrapper } from '@/components/fact-feed-provider-wrapper';
 
 export const metadata: Metadata = {
   title: {
@@ -21,7 +22,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://js.puter.com/v2/" 
           strategy="afterInteractive"
         />
-        {children}
+        <FactFeedProviderWrapper>
+          {children}
+        </FactFeedProviderWrapper>
       </body>
     </html>
   );

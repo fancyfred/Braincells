@@ -1,7 +1,11 @@
 'use client';
 
+import Link from 'next/link';
 import { useFactFeed } from '@/contexts/fact-feed-context';
 import { FactFeedSelector } from './fact-feed-selector';
+import { getAreaLabel } from '@/types/fact';
+import { getCategoryLabel } from '@/config/categories';
+import { moodLabels, type FactMood } from '@/types/mood';
 
 export function FactFeedSection() {
   const {
@@ -17,7 +21,14 @@ export function FactFeedSection() {
     toggleFactFeed,
     selectorOpen,
     setSelectorOpen,
+    topicNames,
   } = useFactFeed();
+
+  const hasTags = fact?.fact && fact?.topic;
+  const moodLabel = fact?.mood ? moodLabels[fact.mood as FactMood] : null;
+  const categoryLabel = fact?.category ? getCategoryLabel(fact.category) : null;
+  const topicLabel = fact?.topic ? topicNames[fact.topic] ?? fact.topic : null;
+  const areaLabel = fact?.area ? getAreaLabel(fact.area) : null;
 
   return (
     <section className="home-section fact-feed-section" id="fact-feed" aria-labelledby="fact-feed-heading">
@@ -110,7 +121,33 @@ export function FactFeedSection() {
         {loading ? (
           <p className="fact-feed-section-loading">Loading…</p>
         ) : fact?.fact ? (
-          <p className="fact-feed-section-fact">{fact.fact}</p>
+          <>
+            <p className="fact-feed-section-fact">{fact.fact}</p>
+            {hasTags && (
+              <div className="fact-feed-section-tags" aria-label="Browse by">
+                {fact.mood && (
+                  <Link href={`/browse?mood=${fact.mood}`} className="fact-feed-section-tag" title={`Browse by mood: ${moodLabel}`}>
+                    {moodLabel}
+                  </Link>
+                )}
+                {fact.category && (
+                  <Link href={`/browse/category?cat=${fact.category}`} className="fact-feed-section-tag" title={`Browse by category: ${categoryLabel}`}>
+                    {categoryLabel}
+                  </Link>
+                )}
+                {fact.topic && (
+                  <Link href={`/${fact.topic}`} className="fact-feed-section-tag" title={`Topic: ${topicLabel}`}>
+                    {topicLabel}
+                  </Link>
+                )}
+                {fact.area && (
+                  <Link href={`/${fact.topic}?area=${fact.area}`} className="fact-feed-section-tag" title={`Area: ${areaLabel}`}>
+                    {areaLabel}
+                  </Link>
+                )}
+              </div>
+            )}
+          </>
         ) : (
           <p className="fact-feed-section-placeholder">Start the feed to hear facts out loud.</p>
         )}

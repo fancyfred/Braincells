@@ -15,10 +15,16 @@ import { topics, type Topic } from '@/config/topics';
 export interface FactData {
   fact: string;
   topic: string;
+  /** Mood of the topic (for browse link). */
+  mood?: string;
+  /** Category of the topic (for browse-by-category link). */
+  category?: string;
+  /** Area within the topic (for topic?area= link); omitted when misc. */
+  area?: string;
 }
 
 const topicNames: Record<string, string> = {
-  braincells: 'the brain',
+  braincells: 'The brain',
   coffee: 'coffee',
   'greek-mythology': 'Greek mythology',
   space: 'space',
@@ -38,7 +44,7 @@ const topicNames: Record<string, string> = {
   'world-leaders': 'world leaders',
   elements: 'chemical elements',
   philosophy: 'philosophy',
-  seinfeld: 'Seinfeld',
+  'human-body': 'the human body',
   olympics: 'the Olympics',
   internet: 'the internet',
   octopi: 'octopuses',

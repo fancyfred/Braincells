@@ -19,7 +19,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
           <li key={i} className="breadcrumbs-item">
             {i > 0 && <span className="breadcrumbs-sep" aria-hidden>›</span>}
             {item.href != null ? (
-              <Link href={item.href} className="breadcrumbs-link">
+              <Link href={item.href as Parameters<typeof Link>[0]['href']} className="breadcrumbs-link">
                 {item.label}
               </Link>
             ) : (
