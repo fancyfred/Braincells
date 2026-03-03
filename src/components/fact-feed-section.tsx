@@ -117,6 +117,25 @@ export function FactFeedSection() {
           </>
         )}
       </div>
+      {selectedTopics.size > 0 && (
+        <p className="fact-feed-section-selected">
+          <span className="fact-feed-section-selected-label">Playing from: </span>
+          <span className="fact-feed-section-selected-list">
+            {[...selectedTopics]
+              .sort()
+              .map((slug) => topicNames[slug] ?? slug)
+              .join(', ')}
+          </span>
+          <button
+            type="button"
+            className="fact-feed-section-selected-change"
+            onClick={() => setSelectorOpen(true)}
+            aria-label="Change selected topics"
+          >
+            Change
+          </button>
+        </p>
+      )}
       <div className={`fact-feed-section-current ${factFeedMode ? 'active' : ''}`}>
         {loading ? (
           <p className="fact-feed-section-loading">Loading…</p>

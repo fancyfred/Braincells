@@ -15,8 +15,8 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <nav className="nav shell">
-        <Link href="/" aria-label="Fact Me App home" className="nav-logo">
-          <span className="tagline">Fact Me App!</span>
+        <Link href="/" aria-label="The Fact Feed home" className="nav-logo">
+          <span className="tagline">The Fact Feed</span>
         </Link>
         <NavBrowseLinks />
         <div className="nav-actions">
@@ -27,6 +27,8 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
       <main>{children}</main>
       <footer className="footer">
         <div className="footer-inner">
+          <Link href="/" className="footer-brand">The Fact Feed</Link>
+          <p className="footer-tagline">Facts for curious minds.</p>
           <div className="footer-sections">
             <section className="footer-section" aria-labelledby="footer-browse">
               <h2 id="footer-browse" className="footer-heading">Browse</h2>
@@ -55,7 +57,6 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
               </ul>
             </section>
           </div>
-          <p className="footer-tagline">Fact Me App! — Facts for curious minds.</p>
         </div>
       </footer>
     </>

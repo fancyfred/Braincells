@@ -5,8 +5,8 @@ import { FactFeedProviderWrapper } from '@/components/fact-feed-provider-wrapper
 
 export const metadata: Metadata = {
   title: {
-    default: 'Fact Me App!',
-    template: '%s | Fact Me App!'
+    default: 'The Fact Feed',
+    template: '%s | The Fact Feed'
   },
   description: 'Discover fascinating facts about the world around us. Playful enough for kids, deep enough for adults.',
   icons: {

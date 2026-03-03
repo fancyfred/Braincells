@@ -11,7 +11,7 @@ function moodLabel(mood: FactMood): string {
 }
 
 export const metadata: Metadata = {
-  title: 'Browse facts | Fact Me App!',
+  title: 'Browse facts | The Fact Feed',
   description: 'Browse facts by topic. Choose a mood and explore.',
 };
 

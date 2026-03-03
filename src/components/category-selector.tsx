@@ -39,10 +39,6 @@ export function CategorySelector() {
 
   return (
     <div className="category-selector">
-      <div className="category-selector-header">
-        <span className="category-label">Category:</span>
-        <span className="category-subtitle">Browse topics by category.</span>
-      </div>
       <div className="category-buttons">
         <button
           key="all"

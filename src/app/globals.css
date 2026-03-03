@@ -794,6 +794,25 @@ main {
   object-fit: cover;
 }
 
+/* In list view, the image is clickable (whole row is a link) */
+.fun-facts-list-view .fact-image {
+  cursor: pointer;
+}
+
+.fun-facts-list-view .fact-image:hover img {
+  opacity: 0.9;
+}
+
+/* In single fact view, show larger image */
+.fun-facts:not(.fun-facts-list-view) .fact-image {
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  min-width: unset;
+  min-height: unset;
+}
+
 .fact-icon {
   width: 100%;
   height: 100%;
@@ -1011,6 +1030,12 @@ main {
 .mood-button-label {
   font-size: 0.95rem;
   font-weight: 600;
+}
+
+.mood-button-tagline {
+  font-weight: 500;
+  opacity: 0.85;
+  font-size: 0.88em;
 }
 
 .mood-button-description {
@@ -1364,6 +1389,42 @@ main {
   width: 20px;
   height: 20px;
   stroke: currentColor;
+}
+
+.fact-feed-section-selected {
+  margin: 0.75rem 0 0;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.fact-feed-section-selected-label {
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.fact-feed-section-selected-list {
+  color: var(--muted);
+}
+
+.fact-feed-section-selected-change {
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--cobalt-600);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fact-feed-section-selected-change:hover {
+  color: var(--cobalt-700);
+  background: color-mix(in srgb, var(--cobalt-500) 12%, transparent);
 }
 
 .fact-feed-section-current {
@@ -1727,24 +1788,44 @@ main {
 
 .footer {
   margin-top: 3rem;
-  padding: 2rem 1rem 2.5rem;
+  padding: 2.5rem 1rem 3rem;
   color: var(--muted);
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
   text-align: center;
+  background: color-mix(in srgb, var(--card) 40%, transparent);
 }
 
 .footer-inner {
-  max-width: 100%;
+  max-width: 720px;
   margin: 0 auto;
+}
+
+.footer-brand {
+  display: inline-block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--fg);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+  transition: color 0.15s;
+}
+
+.footer-brand:hover {
+  color: var(--cobalt-600);
+}
+
+.footer-tagline {
+  margin: 0 0 1.5rem;
+  font-size: 0.9rem;
+  color: var(--muted);
 }
 
 .footer-sections {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem 2rem;
-  margin-bottom: 1.25rem;
   text-align: left;
-  max-width: 640px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -1754,13 +1835,13 @@ main {
 }
 
 .footer-heading {
-  margin: 0 0 0.4rem;
-  font-size: 0.75rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--fg);
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 .footer-links {
@@ -1769,7 +1850,7 @@ main {
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.15rem 0.75rem;
+  gap: 0.2rem 0.75rem;
 }
 
 .footer-links li {
@@ -1778,7 +1859,7 @@ main {
 
 .footer-links a {
   display: inline-block;
-  padding: 0.2rem 0;
+  padding: 0.25rem 0;
   color: var(--muted);
   text-decoration: none;
   font-size: 0.9rem;
@@ -1787,12 +1868,6 @@ main {
 
 .footer-links a:hover {
   color: var(--fg);
-}
-
-.footer-tagline {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--muted);
 }
 
 @media (max-width: 520px) {

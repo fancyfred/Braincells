@@ -119,7 +119,7 @@ class PollyTTSService implements TTSService {
         if ('mediaSession' in navigator) {
           navigator.mediaSession.metadata = new MediaMetadata({
             title: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
-            artist: 'Fact Me App',
+            artist: 'The Fact Feed',
             album: 'Fact Feed',
           });
 
@@ -320,7 +320,7 @@ class PuterTTSService implements TTSService {
         if ('mediaSession' in navigator) {
           navigator.mediaSession.metadata = new MediaMetadata({
             title: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
-            artist: 'Fact Me App',
+            artist: 'The Fact Feed',
             album: 'Fact Feed',
           });
 

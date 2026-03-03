@@ -17,6 +17,8 @@ interface FactListProps {
   facts: Fact[];
   currentFactIndex: number;
   singleFactView?: boolean;
+  /** Topic slug (e.g. ancient-egypt) for resolving local images. */
+  topicSlug?: string;
   /** When set (e.g. on area page), fact links go here with ?fact=N. Use with originalIndices. */
   linkBasePath?: string;
   /** When set, list view uses these indices for ?fact=N (for linking into full topic from area view). */
@@ -27,6 +29,7 @@ export function FactList({
   facts,
   currentFactIndex: initialFactIndex,
   singleFactView = false,
+  topicSlug,
   linkBasePath,
   originalIndices,
 }: FactListProps) {
@@ -81,17 +84,23 @@ export function FactList({
     }
 
     const fetchImages = async () => {
-      const imagePromises = factsToFetch.map(async (fact) => {
+      const imagePromises = factsToFetch.map(async (fact, i) => {
         const query = buildImageQuery(fact);
+        const topicFactIndex = originalIndices ? originalIndices[i] : (singleFactView ? currentIndex : i);
+        const params = new URLSearchParams({ query });
+        if (topicSlug) params.set('topic', topicSlug);
+        params.set('factIndex', String(topicFactIndex));
+        // Use thumb in list view, medium in single fact view
+        params.set('size', singleFactView ? 'medium' : 'thumb');
 
         try {
-          const response = await fetch(`/api/images?query=${encodeURIComponent(query)}`);
+          const response = await fetch(`/api/images?${params.toString()}`);
           const data = await response.json();
           return {
             ...fact,
             imageUrl: data.url || null,
             imageAlt: data.alt || query || 'Brain illustration',
-            useIcon: data.useIcon || false,
+            useIcon: data.useIcon ?? true,
           };
         } catch (error) {
           return {
@@ -110,7 +119,7 @@ export function FactList({
 
     setLoading(true);
     fetchImages();
-  }, [facts, imagesEnabled, singleFactView, currentIndex]);
+  }, [facts, imagesEnabled, singleFactView, currentIndex, topicSlug, originalIndices]);
 
   // Only cancel TTS on unmount/facts change if this list started it (speak button). Don't cancel the fact feed.
   useEffect(() => {
@@ -211,7 +220,7 @@ export function FactList({
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: 'Fact',
-        artist: 'Fact Me App',
+        artist: 'The Fact Feed',
         artwork: [],
       });
 
@@ -317,13 +326,23 @@ export function FactList({
               )}
               <div className="fact-image" style={{ visibility: imagesEnabled && (item.imageUrl || item.useIcon) ? 'visible' : 'hidden' }}>
                 {imagesEnabled && item.imageUrl ? (
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.imageAlt}
-                    width={400}
-                    height={300}
-                    style={{ objectFit: 'cover', borderRadius: '8px' }}
-                  />
+                  singleFactView ? (
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.imageAlt}
+                      width={400}
+                      height={300}
+                      style={{ objectFit: 'cover', borderRadius: '8px' }}
+                    />
+                  ) : (
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.imageAlt}
+                      width={400}
+                      height={300}
+                      style={{ objectFit: 'cover', borderRadius: '8px' }}
+                    />
+                  )
                 ) : imagesEnabled && item.useIcon ? (
                   <div className="fact-icon">
                     {index % 2 === 0 ? (

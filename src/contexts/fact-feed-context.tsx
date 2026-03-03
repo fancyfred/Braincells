@@ -74,6 +74,12 @@ const topicNames: Record<string, string> = {
   'dutch-empire': 'the Dutch Empire',
   'fast-food-chains': 'fast food chains',
   composers: 'composers',
+  'area-51': 'Area 51',
+  frequencies: 'frequencies',
+  semiconductors: 'semiconductors',
+  papacy: 'the Papacy',
+  'roman-emperors': 'Roman emperors',
+  crypto: 'crypto and Bitcoin',
 };
 
 interface FactFeedContextValue {
@@ -185,7 +191,7 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
     if (!factFeedMode || !('mediaSession' in navigator)) return;
     navigator.mediaSession.metadata = new MediaMetadata({
       title: 'Fact Feed',
-      artist: 'Fact Me App',
+      artist: 'The Fact Feed',
       artwork: [],
     });
     navigator.mediaSession.setActionHandler('pause', () => ttsServiceRef.current?.cancel());

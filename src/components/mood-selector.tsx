@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { FactMood, moodLabels, moodDescriptions } from '@/types/mood';
+import { FactMood, moodLabels, moodTaglines, moodDescriptions } from '@/types/mood';
 
 export function MoodSelector() {
   const router = useRouter();
@@ -35,11 +35,11 @@ export function MoodSelector() {
     router.push(`${pathname}${queryString ? `?${queryString}` : ''}` as any);
   };
 
-  const moods: Array<{ value: FactMood | 'all'; label: string; description: string }> = [
+  const moods: Array<{ value: FactMood | 'all'; label: string; tagline?: string; description: string }> = [
     { value: 'all', label: 'All Moods', description: 'Show all topics' },
     { value: 'general', label: moodLabels.general, description: moodDescriptions.general },
     { value: 'niche', label: moodLabels.niche, description: moodDescriptions.niche },
-    { value: 'obscure', label: moodLabels.obscure, description: moodDescriptions.obscure },
+    { value: 'obscure', label: moodLabels.obscure, tagline: moodTaglines.obscure, description: moodDescriptions.obscure },
   ];
 
   if (!mounted) {
@@ -61,7 +61,10 @@ export function MoodSelector() {
             title={mood.description}
             aria-label={`${mood.label} mood`}
           >
-            <span className="mood-button-label">{mood.label}</span>
+            <span className="mood-button-label">
+              {mood.label}
+              {mood.tagline && <span className="mood-button-tagline"> {mood.tagline}</span>}
+            </span>
             <span className="mood-button-description">{mood.description}</span>
           </button>
         ))}

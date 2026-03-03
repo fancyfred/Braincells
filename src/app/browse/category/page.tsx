@@ -8,7 +8,7 @@ import { getCategoryLabel } from '@/config/categories';
 import type { CategorySlug } from '@/config/categories';
 
 export const metadata: Metadata = {
-  title: 'Browse by category | Fact Me App!',
+  title: 'Browse by category | The Fact Feed',
   description: 'Browse facts by category. Choose a category and explore topics.',
 };
 
@@ -53,9 +53,6 @@ export default async function BrowseByCategoryPage({
       <section className="shell browse-page">
         <Breadcrumbs items={breadcrumbItems} />
         <h1>Browse by category</h1>
-        <p className="browse-intro">
-          Pick a category to see topics. Use the filter to narrow by category.
-        </p>
         <CategorySelector />
         <div className="topics-grid">
           {filteredTopics.map((topic) => (

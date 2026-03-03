@@ -49,6 +49,12 @@ import { austronesianMigrationFacts } from '@/data/austronesian-migration';
 import { dutchEmpireFacts } from '@/data/dutch-empire';
 import { fastFoodChainsFacts } from '@/data/fast-food-chains';
 import { composersFacts } from '@/data/composers';
+import { area51Facts } from '@/data/area-51';
+import { frequenciesFacts } from '@/data/frequencies';
+import { semiconductorsFacts } from '@/data/semiconductors';
+import { papacyFacts } from '@/data/papacy';
+import { romanEmperorsFacts } from '@/data/roman-emperors';
+import { cryptoFacts } from '@/data/crypto';
 import { Fact, getFactArea } from '@/types/fact';
 import { topics } from '@/config/topics';
 
@@ -109,6 +115,12 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...dutchEmpireFacts.map(f => ({ fact: f, topic: 'dutch-empire' })),
   ...fastFoodChainsFacts.map(f => ({ fact: f, topic: 'fast-food-chains' })),
   ...composersFacts.map(f => ({ fact: f, topic: 'composers' })),
+  ...area51Facts.map(f => ({ fact: f, topic: 'area-51' })),
+  ...frequenciesFacts.map(f => ({ fact: f, topic: 'frequencies' })),
+  ...semiconductorsFacts.map(f => ({ fact: f, topic: 'semiconductors' })),
+  ...papacyFacts.map(f => ({ fact: f, topic: 'papacy' })),
+  ...romanEmperorsFacts.map(f => ({ fact: f, topic: 'roman-emperors' })),
+  ...cryptoFacts.map(f => ({ fact: f, topic: 'crypto' })),
 ];
 
 export async function GET(request: Request) {

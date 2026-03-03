@@ -129,6 +129,7 @@ export default async function Page({
               facts={factsToShow}
               currentFactIndex={displayIndexInFiltered}
               singleFactView={hasFactParam}
+              topicSlug={topic}
               linkBasePath={filteredByArea ? `${topicListHref}?area=${areaParam}` : undefined}
               originalIndices={filteredByArea ? originalIndices : undefined}
             />

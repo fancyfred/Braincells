@@ -18,7 +18,7 @@ export async function generateMetadata({
   const topicInfo = topicData[topic];
   if (!topicInfo) return { title: 'Topic Not Found' };
   return {
-    title: `${topicInfo.title} by area | Fact Me App!`,
+    title: `${topicInfo.title} by area | The Fact Feed`,
     description: `Browse ${topicInfo.title} by area.`,
   };
 }
@@ -117,6 +117,7 @@ export default async function TopicAreasPage({
                 facts={filteredFacts}
                 currentFactIndex={0}
                 singleFactView={false}
+                topicSlug={topic}
                 linkBasePath={topicHref}
                 originalIndices={originalIndices}
               />
