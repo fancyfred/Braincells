@@ -81,7 +81,7 @@ export default async function TopicAreasPage({
             This topic doesn&apos;t have areas yet. All facts are in the main list.
           </p>
           <p>
-            <Link href={topicHref} className="browse-alt-link">
+            <Link href={topicHref as Parameters<typeof Link>[0]['href']} className="browse-alt-link">
               View all facts
             </Link>
           </p>
