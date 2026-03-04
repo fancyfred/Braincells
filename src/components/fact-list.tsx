@@ -139,7 +139,7 @@ export function FactList({
   }, [currentIndex]);
 
   // Next/prev use full-topic fact index; when in area view use originalIndices so we cycle within area
-  const getFactParamForIndex = (indexInList: number): string | null =>
+  const getFactParamForIndex = (indexInList: number): string =>
     originalIndices != null ? String(originalIndices[indexInList]) : String(indexInList);
 
   // Left/Right arrow keys to move through facts
@@ -429,7 +429,7 @@ export function FactList({
               className={`fact-item ${isCurrent ? 'fact-item-current' : ''} ${!singleFactView ? 'fact-item-clickable' : ''}`}
             >
               {!singleFactView ? (
-                <Link href={factHref} className="fact-item-link">
+                <Link href={factHref as Parameters<typeof Link>[0]['href']} className="fact-item-link">
                   {factBody}
                 </Link>
               ) : (
