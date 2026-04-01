@@ -244,6 +244,14 @@ export const topics: Topic[] = [
     category: 'history',
   },
   {
+    slug: 'american-civil-war',
+    title: 'American Civil War Facts',
+    description: 'Fascinating facts about the American Civil War, its major battles, key leaders, emancipation, and long-term impact on U.S. history.',
+    emoji: '🪖',
+    mood: 'general',
+    category: 'history',
+  },
+  {
     slug: 'chocolate',
     title: 'Chocolate Facts',
     description: 'Fascinating facts about chocolate, its history, production, health benefits, and cultural significance.',

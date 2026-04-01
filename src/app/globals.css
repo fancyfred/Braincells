@@ -84,6 +84,7 @@ main {
 
 .nav .nav-logo {
   justify-self: start;
+  padding-left: 0.6rem;
 }
 
 .nav .nav-actions {
@@ -493,6 +494,33 @@ main {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+
+.fact-feed-selector-search-row {
+  padding: 0.85rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.fact-feed-selector-search-input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: var(--card);
+  color: var(--fg);
+  font-size: 0.92rem;
+}
+
+.fact-feed-selector-search-input:focus {
+  outline: none;
+  border-color: var(--cobalt-500);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cobalt-500) 20%, transparent);
+}
+
+.fact-feed-selector-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .fact-feed-selector-group {
@@ -1592,6 +1620,32 @@ main {
 
 .browse-alt-link:hover {
   text-decoration: underline;
+}
+
+.topic-search-wrap {
+  margin-top: 1rem;
+}
+
+.topic-search-input {
+  width: min(100%, 460px);
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: var(--card);
+  color: var(--fg);
+  font-size: 0.95rem;
+}
+
+.topic-search-input:focus {
+  outline: none;
+  border-color: var(--cobalt-500);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cobalt-500) 20%, transparent);
+}
+
+.topics-empty {
+  margin-top: 1.5rem;
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .topics-grid {

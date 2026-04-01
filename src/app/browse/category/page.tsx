@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import { SiteLayout } from '@/components/layout';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { CategorySelector } from '@/components/category-selector';
+import { TopicGrid } from '@/components/topic-grid';
 import { topics } from '@/config/topics';
 import { getCategoryLabel } from '@/config/categories';
 import type { CategorySlug } from '@/config/categories';
@@ -54,28 +54,7 @@ export default async function BrowseByCategoryPage({
         <Breadcrumbs items={breadcrumbItems} />
         <h1>Browse by category</h1>
         <CategorySelector />
-        <div className="topics-grid">
-          {filteredTopics.map((topic) => (
-            <Link
-              key={topic.slug}
-              href={`/${topic.slug}` as any}
-              className="topic-card"
-            >
-              <div className="topic-emoji">{topic.emoji}</div>
-              <div className="topic-header">
-                <h2>{topic.title}</h2>
-                <span className={`topic-mood-badge mood-${topic.mood}`}>
-                  {topic.mood === 'general'
-                    ? 'General'
-                    : topic.mood === 'niche'
-                      ? 'Niche'
-                      : 'Obscure'}
-                </span>
-              </div>
-              <p>{topic.description}</p>
-            </Link>
-          ))}
-        </div>
+        <TopicGrid topics={filteredTopics} />
       </section>
     </SiteLayout>
   );

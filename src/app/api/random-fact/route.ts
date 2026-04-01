@@ -28,6 +28,7 @@ import { sharksFacts } from '@/data/sharks';
 import { oceansFacts } from '@/data/oceans';
 import { mountainsFacts } from '@/data/mountains';
 import { ancientEgyptFacts } from '@/data/ancient-egypt';
+import { americanCivilWarFacts } from '@/data/american-civil-war';
 import { chocolateFacts } from '@/data/chocolate';
 import { spicesFacts } from '@/data/spices';
 import { artFacts } from '@/data/art';
@@ -94,6 +95,7 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...oceansFacts.map(f => ({ fact: f, topic: 'oceans' })),
   ...mountainsFacts.map(f => ({ fact: f, topic: 'mountains' })),
   ...ancientEgyptFacts.map(f => ({ fact: f, topic: 'ancient-egypt' })),
+  ...americanCivilWarFacts.map(f => ({ fact: f, topic: 'american-civil-war' })),
   ...chocolateFacts.map(f => ({ fact: f, topic: 'chocolate' })),
   ...spicesFacts.map(f => ({ fact: f, topic: 'spices' })),
   ...artFacts.map(f => ({ fact: f, topic: 'art' })),

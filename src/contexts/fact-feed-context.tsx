@@ -53,6 +53,7 @@ const topicNames: Record<string, string> = {
   oceans: 'the oceans',
   mountains: 'mountains',
   'ancient-egypt': 'ancient Egypt',
+  'american-civil-war': 'the American Civil War',
   chocolate: 'chocolate',
   spices: 'spices',
   art: 'art',

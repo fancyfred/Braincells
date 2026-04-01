@@ -29,6 +29,11 @@ export function FactFeedSection() {
   const categoryLabel = fact?.category ? getCategoryLabel(fact.category) : null;
   const topicLabel = fact?.topic ? topicNames[fact.topic] ?? fact.topic : null;
   const areaLabel = fact?.area ? getAreaLabel(fact.area) : null;
+  const selectedTopicLabels = [...selectedTopics]
+    .sort()
+    .map((slug) => topicNames[slug] ?? slug);
+  const selectedTopicsPreview = selectedTopicLabels.slice(0, 5).join(', ');
+  const selectedTopicsSummary = selectedTopicLabels.length > 5 ? `${selectedTopicsPreview}, ...` : selectedTopicsPreview;
 
   return (
     <section className="home-section fact-feed-section" id="fact-feed" aria-labelledby="fact-feed-heading">
@@ -120,12 +125,7 @@ export function FactFeedSection() {
       {selectedTopics.size > 0 && (
         <p className="fact-feed-section-selected">
           <span className="fact-feed-section-selected-label">Playing from: </span>
-          <span className="fact-feed-section-selected-list">
-            {[...selectedTopics]
-              .sort()
-              .map((slug) => topicNames[slug] ?? slug)
-              .join(', ')}
-          </span>
+          <span className="fact-feed-section-selected-list">{selectedTopicsSummary}</span>
           <button
             type="button"
             className="fact-feed-section-selected-change"

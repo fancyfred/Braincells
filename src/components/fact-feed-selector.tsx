@@ -16,6 +16,7 @@ interface FactFeedSelectorProps {
 export function FactFeedSelector({ isOpen, onClose, selectedTopics, onTopicsChange }: FactFeedSelectorProps) {
   const [localSelected, setLocalSelected] = useState<Set<string>>(selectedTopics);
   const [randomCount, setRandomCount] = useState<number>(5);
+  const [searchQuery, setSearchQuery] = useState('');
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Sync local state with props
@@ -37,12 +38,23 @@ export function FactFeedSelector({ isOpen, onClose, selectedTopics, onTopicsChan
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen, onClose]);
 
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const searchableTopics = normalizedSearchQuery
+    ? topics.filter((topic) => (
+      topic.title.toLowerCase().includes(normalizedSearchQuery)
+      || topic.slug.toLowerCase().includes(normalizedSearchQuery)
+      || topic.description.toLowerCase().includes(normalizedSearchQuery)
+    ))
+    : topics;
+
   // Group topics by mood
   const topicsByMood = {
-    general: topics.filter(t => t.mood === 'general'),
-    niche: topics.filter(t => t.mood === 'niche'),
-    obscure: topics.filter(t => t.mood === 'obscure'),
+    general: searchableTopics.filter(t => t.mood === 'general'),
+    niche: searchableTopics.filter(t => t.mood === 'niche'),
+    obscure: searchableTopics.filter(t => t.mood === 'obscure'),
   };
+
+  const hasSearchResults = searchableTopics.length > 0;
 
   const handleTopicToggle = (slug: string) => {
     const newSelected = new Set(localSelected);
@@ -140,35 +152,50 @@ export function FactFeedSelector({ isOpen, onClose, selectedTopics, onTopicsChan
           </div>
         </div>
 
+        <div className="fact-feed-selector-search-row">
+          <input
+            type="search"
+            className="fact-feed-selector-search-input"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search topics..."
+            aria-label="Search topics"
+          />
+        </div>
+
         <div className="fact-feed-selector-content">
-          {(['general', 'niche', 'obscure'] as const).map((mood) => (
-            <div key={mood} className="fact-feed-selector-group">
-              <h4 className="fact-feed-selector-group-title">
-                <span className={`mood-badge mood-${mood}`}>
-                  {mood === 'general' ? 'General' : mood === 'niche' ? 'Niche' : 'Obscure'}
-                </span>
-                <span className="fact-feed-selector-group-count">
-                  ({topicsByMood[mood].length})
-                </span>
-              </h4>
-              <div className="fact-feed-selector-topics">
-                {topicsByMood[mood].map((topic) => (
-                  <label
-                    key={topic.slug}
-                    className="fact-feed-selector-topic"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={localSelected.has(topic.slug)}
-                      onChange={() => handleTopicToggle(topic.slug)}
-                    />
-                    <span className="fact-feed-selector-topic-emoji">{topic.emoji}</span>
-                    <span className="fact-feed-selector-topic-name">{topic.title}</span>
-                  </label>
-                ))}
+          {hasSearchResults ? (
+            (['general', 'niche', 'obscure'] as const).map((mood) => (
+              <div key={mood} className="fact-feed-selector-group">
+                <h4 className="fact-feed-selector-group-title">
+                  <span className={`mood-badge mood-${mood}`}>
+                    {mood === 'general' ? 'General' : mood === 'niche' ? 'Niche' : 'Obscure'}
+                  </span>
+                  <span className="fact-feed-selector-group-count">
+                    ({topicsByMood[mood].length})
+                  </span>
+                </h4>
+                <div className="fact-feed-selector-topics">
+                  {topicsByMood[mood].map((topic) => (
+                    <label
+                      key={topic.slug}
+                      className="fact-feed-selector-topic"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={localSelected.has(topic.slug)}
+                        onChange={() => handleTopicToggle(topic.slug)}
+                      />
+                      <span className="fact-feed-selector-topic-emoji">{topic.emoji}</span>
+                      <span className="fact-feed-selector-topic-name">{topic.title}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="fact-feed-selector-empty">No topics match your search.</p>
+          )}
         </div>
 
         <div className="fact-feed-selector-footer">

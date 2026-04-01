@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import { SiteLayout } from '@/components/layout';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { MoodSelector } from '@/components/mood-selector';
+import { TopicGrid } from '@/components/topic-grid';
 import { topics } from '@/config/topics';
 import { FactMood } from '@/types/mood';
 
@@ -45,28 +45,7 @@ export default async function BrowsePage({
           Or <Link href="/browse/category" className="browse-alt-link">browse by category</Link>.
         </p>
         <MoodSelector />
-        <div className="topics-grid">
-          {filteredTopics.map((topic) => (
-            <Link
-              key={topic.slug}
-              href={`/${topic.slug}` as any}
-              className="topic-card"
-            >
-              <div className="topic-emoji">{topic.emoji}</div>
-              <div className="topic-header">
-                <h2>{topic.title}</h2>
-                <span className={`topic-mood-badge mood-${topic.mood}`}>
-                  {topic.mood === 'general'
-                    ? 'General'
-                    : topic.mood === 'niche'
-                      ? 'Niche'
-                      : 'Obscure'}
-                </span>
-              </div>
-              <p>{topic.description}</p>
-            </Link>
-          ))}
-        </div>
+        <TopicGrid topics={filteredTopics} />
       </section>
     </SiteLayout>
   );

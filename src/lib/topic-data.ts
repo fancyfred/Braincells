@@ -27,6 +27,7 @@ import { sharksFacts } from '@/data/sharks';
 import { oceansFacts } from '@/data/oceans';
 import { mountainsFacts } from '@/data/mountains';
 import { ancientEgyptFacts } from '@/data/ancient-egypt';
+import { americanCivilWarFacts } from '@/data/american-civil-war';
 import { chocolateFacts } from '@/data/chocolate';
 import { spicesFacts } from '@/data/spices';
 import { artFacts } from '@/data/art';
@@ -88,6 +89,7 @@ export const topicData: Record<string, { facts: Fact[]; title: string; descripti
   oceans: { facts: oceansFacts, title: 'Oceans Facts', description: topics.find(t => t.slug === 'oceans')?.description || '' },
   mountains: { facts: mountainsFacts, title: 'Mountains Facts', description: topics.find(t => t.slug === 'mountains')?.description || '' },
   'ancient-egypt': { facts: ancientEgyptFacts, title: 'Ancient Egypt Facts', description: topics.find(t => t.slug === 'ancient-egypt')?.description || '' },
+  'american-civil-war': { facts: americanCivilWarFacts, title: 'American Civil War Facts', description: topics.find(t => t.slug === 'american-civil-war')?.description || '' },
   chocolate: { facts: chocolateFacts, title: 'Chocolate Facts', description: topics.find(t => t.slug === 'chocolate')?.description || '' },
   spices: { facts: spicesFacts, title: 'Spices Facts', description: topics.find(t => t.slug === 'spices')?.description || '' },
   art: { facts: artFacts, title: 'Art Facts', description: topics.find(t => t.slug === 'art')?.description || '' },
