@@ -51,11 +51,15 @@ import { fastFoodChainsFacts } from '@/data/fast-food-chains';
 import { composersFacts } from '@/data/composers';
 import { oilFacts } from '@/data/oil';
 import { area51Facts } from '@/data/area-51';
+import { jupitersMoonsFacts } from '@/data/jupiters-moons';
 import { frequenciesFacts } from '@/data/frequencies';
 import { semiconductorsFacts } from '@/data/semiconductors';
 import { papacyFacts } from '@/data/papacy';
 import { romanEmperorsFacts } from '@/data/roman-emperors';
 import { cryptoFacts } from '@/data/crypto';
+import { iceCreamFacts } from '@/data/ice-cream';
+import { wwiFacts } from '@/data/wwi';
+import { wwiiFacts } from '@/data/wwii';
 import { Fact } from '@/types/fact';
 import { topics } from '@/config/topics';
 
@@ -113,10 +117,14 @@ export const topicData: Record<string, { facts: Fact[]; title: string; descripti
   composers: { facts: composersFacts, title: 'Composers Facts', description: topics.find(t => t.slug === 'composers')?.description || '' },
   oil: { facts: oilFacts, title: 'Oil Facts', description: topics.find(t => t.slug === 'oil')?.description || '' },
   'area-51': { facts: area51Facts, title: 'Area 51 Facts', description: topics.find(t => t.slug === 'area-51')?.description || '' },
+  'jupiters-moons': { facts: jupitersMoonsFacts, title: 'Jupiter\'s Moons Facts', description: topics.find(t => t.slug === 'jupiters-moons')?.description || '' },
   frequencies: { facts: frequenciesFacts, title: 'Frequencies', description: topics.find(t => t.slug === 'frequencies')?.description || '' },
   semiconductors: { facts: semiconductorsFacts, title: 'Semiconductors', description: topics.find(t => t.slug === 'semiconductors')?.description || '' },
   papacy: { facts: papacyFacts, title: 'The Papacy', description: topics.find(t => t.slug === 'papacy')?.description || '' },
   'roman-emperors': { facts: romanEmperorsFacts, title: 'Roman Emperors', description: topics.find(t => t.slug === 'roman-emperors')?.description || '' },
   crypto: { facts: cryptoFacts, title: 'Crypto & Bitcoin', description: topics.find(t => t.slug === 'crypto')?.description || '' },
+  'ice-cream': { facts: iceCreamFacts, title: 'Ice Cream Facts', description: topics.find(t => t.slug === 'ice-cream')?.description || '' },
+  wwi: { facts: wwiFacts, title: 'World War I Facts', description: topics.find(t => t.slug === 'wwi')?.description || '' },
+  wwii: { facts: wwiiFacts, title: 'World War II Facts', description: topics.find(t => t.slug === 'wwii')?.description || '' },
 };
 

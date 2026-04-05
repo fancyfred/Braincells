@@ -76,6 +76,7 @@ const topicNames: Record<string, string> = {
   'fast-food-chains': 'fast food chains',
   composers: 'composers',
   'area-51': 'Area 51',
+  'jupiters-moons': 'Jupiter\'s moons',
   frequencies: 'frequencies',
   semiconductors: 'semiconductors',
   papacy: 'the Papacy',

@@ -51,6 +51,7 @@ import { dutchEmpireFacts } from '@/data/dutch-empire';
 import { fastFoodChainsFacts } from '@/data/fast-food-chains';
 import { composersFacts } from '@/data/composers';
 import { area51Facts } from '@/data/area-51';
+import { jupitersMoonsFacts } from '@/data/jupiters-moons';
 import { frequenciesFacts } from '@/data/frequencies';
 import { semiconductorsFacts } from '@/data/semiconductors';
 import { papacyFacts } from '@/data/papacy';
@@ -118,6 +119,7 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...fastFoodChainsFacts.map(f => ({ fact: f, topic: 'fast-food-chains' })),
   ...composersFacts.map(f => ({ fact: f, topic: 'composers' })),
   ...area51Facts.map(f => ({ fact: f, topic: 'area-51' })),
+  ...jupitersMoonsFacts.map(f => ({ fact: f, topic: 'jupiters-moons' })),
   ...frequenciesFacts.map(f => ({ fact: f, topic: 'frequencies' })),
   ...semiconductorsFacts.map(f => ({ fact: f, topic: 'semiconductors' })),
   ...papacyFacts.map(f => ({ fact: f, topic: 'papacy' })),

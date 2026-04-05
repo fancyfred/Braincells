@@ -436,6 +436,14 @@ export const topics: Topic[] = [
     category: 'misc',
   },
   {
+    slug: 'jupiters-moons',
+    title: 'Jupiter\'s Moons Facts',
+    description: 'Fascinating facts about Jupiter\'s moons: the volcanic chaos of Io, Europa\'s hidden ocean, giant Ganymede, ancient Callisto, and the strange captured moons on the solar system\'s outer frontier.',
+    emoji: '🪐',
+    mood: 'obscure',
+    category: 'science',
+  },
+  {
     slug: 'frequencies',
     title: 'Frequencies',
     description: 'Facts about sound, radio, light, and the electromagnetic spectrum — from hertz and human hearing to Wi‑Fi and the grid.',
@@ -474,6 +482,30 @@ export const topics: Topic[] = [
     emoji: '₿',
     mood: 'general',
     category: 'technology',
+  },
+  {
+    slug: 'ice-cream',
+    title: 'Ice Cream Facts',
+    description: 'Fascinating facts about ice cream: its surprising history, the science behind the scoop, weird flavours from around the world, iconic brands, and frozen trivia you never knew you needed.',
+    emoji: '🍦',
+    mood: 'niche',
+    category: 'food',
+  },
+  {
+    slug: 'wwi',
+    title: 'World War I Facts',
+    description: 'Fascinating facts about the Great War: the assassination of Franz Ferdinand, trench warfare, poison gas, the Battle of the Somme, the Christmas Truce, and the Treaty of Versailles.',
+    emoji: '🪖',
+    mood: 'general',
+    category: 'history',
+  },
+  {
+    slug: 'wwii',
+    title: 'World War II Facts',
+    description: 'Fascinating facts about WWII: from the rise of Hitler and the Blitz to D-Day, the Holocaust, the Manhattan Project, Stalingrad, and the atomic bombs that ended the war.',
+    emoji: '✌️',
+    mood: 'general',
+    category: 'history',
   },
 ];
 
