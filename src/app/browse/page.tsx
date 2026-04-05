@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import { SiteLayout } from '@/components/layout';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { MoodSelector } from '@/components/mood-selector';
