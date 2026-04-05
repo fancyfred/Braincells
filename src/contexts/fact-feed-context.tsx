@@ -77,12 +77,18 @@ const topicNames: Record<string, string> = {
   composers: 'Composers',
   'area-51': 'Area 51',
   'jupiters-moons': 'Jupiter\'s Moons',
+  vikings: 'Vikings',
   frequencies: 'Frequencies',
   semiconductors: 'Semiconductors',
   papacy: 'The Papacy',
   'roman-emperors': 'Roman Emperors',
   crypto: 'Crypto and Bitcoin',
 };
+
+const FACT_FEED_FREE_LIMIT = 100;
+const FACT_FEED_COUNT_KEY = 'fact-feed-played-count';
+const FACT_FEED_PAID_KEY = 'fact-feed-paid';
+const PAYWALL_ENABLED = process.env.NEXT_PUBLIC_PAYWALL_ENABLED === 'true';
 
 interface FactFeedContextValue {
   fact: FactData | null;
@@ -98,6 +104,16 @@ interface FactFeedContextValue {
   toggleFactFeed: () => void;
   selectorOpen: boolean;
   setSelectorOpen: (open: boolean) => void;
+  playedFactsCount: number;
+  freeFactsLimit: number;
+  paywallOpen: boolean;
+  setPaywallOpen: (open: boolean) => void;
+  paywallEnabled: boolean;
+  startCheckout: () => Promise<void>;
+  isCheckingOut: boolean;
+  isLocalDev: boolean;
+  devTriggerPaywallAfterCurrent: boolean;
+  setDevTriggerPaywallAfterCurrent: (enabled: boolean) => void;
   topicNames: Record<string, string>;
 }
 
@@ -109,12 +125,20 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
   const [factFeedMode, setFactFeedMode] = useState(false);
   const [paused, setPausedState] = useState(false);
   const [selectorOpen, setSelectorOpen] = useState(false);
+  const [playedFactsCount, setPlayedFactsCount] = useState(0);
+  const [hasPaid, setHasPaid] = useState(false);
+  const [paywallOpen, setPaywallOpenState] = useState(false);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isLocalDev, setIsLocalDev] = useState(false);
+  const [devTriggerPaywallAfterCurrent, setDevTriggerPaywallAfterCurrentState] = useState(false);
   const [selectedTopics, setSelectedTopicsState] = useState<Set<string>>(new Set());
   const ttsServiceRef = useRef<TTSService | null>(null);
   const isProcessingRef = useRef(false);
   const factFeedActiveRef = useRef(false);
   const pausedRef = useRef(false);
   const skipRequestedRef = useRef(false);
+  const hasPaidRef = useRef(false);
+  const paywallAfterCurrentRef = useRef(false);
   const previousTopicRef = useRef<string | null>(null);
   const recentlyPlayedFactsRef = useRef<string[]>([]);
 
@@ -134,7 +158,84 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
     recentlyPlayedFactsRef.current = [];
   }, []);
 
+  const setPaywallOpen = useCallback((open: boolean) => {
+    setPaywallOpenState(open);
+  }, []);
+
+  const setDevTriggerPaywallAfterCurrent = useCallback((enabled: boolean) => {
+    setDevTriggerPaywallAfterCurrentState(enabled);
+    paywallAfterCurrentRef.current = enabled;
+  }, []);
+
+  const incrementPlayedFactsCount = useCallback((): number => {
+    let nextCount = 0;
+    setPlayedFactsCount((prev) => {
+      nextCount = prev + 1;
+      localStorage.setItem(FACT_FEED_COUNT_KEY, String(nextCount));
+      return nextCount;
+    });
+    return nextCount;
+  }, []);
+
+  const openPaywallAndStopFeed = useCallback(() => {
+    if (!PAYWALL_ENABLED) return;
+    factFeedActiveRef.current = false;
+    localStorage.removeItem('fact-feed-active');
+    setFactFeedMode(false);
+    setPaywallOpenState(true);
+  }, []);
+
+  const startCheckout = useCallback(async () => {
+    if (!PAYWALL_ENABLED) return;
+    try {
+      setIsCheckingOut(true);
+      const response = await fetch('/api/stripe/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ origin: window.location.origin }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+      if (!data.url) {
+        throw new Error('No checkout URL returned from Stripe session API');
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error('Failed to start checkout:', error);
+      alert('Unable to start checkout right now. Please try again in a moment.');
+    } finally {
+      setIsCheckingOut(false);
+    }
+  }, []);
+
   useEffect(() => {
+    setIsLocalDev(window.location.hostname === 'localhost');
+
+    const savedCount = parseInt(localStorage.getItem(FACT_FEED_COUNT_KEY) || '0', 10);
+    if (!Number.isNaN(savedCount) && savedCount > 0) {
+      setPlayedFactsCount(savedCount);
+    }
+
+    const savedPaid = localStorage.getItem(FACT_FEED_PAID_KEY) === '1';
+    setHasPaid(savedPaid);
+    hasPaidRef.current = savedPaid;
+
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('ff_paid') === '1') {
+      setHasPaid(true);
+      hasPaidRef.current = true;
+      localStorage.setItem(FACT_FEED_PAID_KEY, '1');
+      setPaywallOpenState(false);
+      url.searchParams.delete('ff_paid');
+      window.history.replaceState({}, '', url.toString());
+    }
+
     const saved = localStorage.getItem('fact-feed-topics');
     if (saved) {
       try {
@@ -196,8 +297,17 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
       artist: 'The Fact Feed',
       artwork: [],
     });
-    navigator.mediaSession.setActionHandler('pause', () => ttsServiceRef.current?.cancel());
-    navigator.mediaSession.setActionHandler('stop', () => ttsServiceRef.current?.cancel());
+    // Avoid hard-canceling speech on media-session pause because some browsers
+    // dispatch pause automatically, which can interrupt every fact cycle.
+    navigator.mediaSession.setActionHandler('pause', () => {
+      setPausedState(true);
+      pausedRef.current = true;
+    });
+    navigator.mediaSession.setActionHandler('stop', () => {
+      setPausedState(true);
+      pausedRef.current = true;
+      ttsServiceRef.current?.cancel();
+    });
     return () => {
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = null;
@@ -214,7 +324,6 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
 
   const speakFact = useCallback(
     async (factText: string, topic: string) => {
-      ttsServiceRef.current?.cancel();
       let topicName = topicNames[topic] || 'various topics';
       const processTopicName = (name: string): { name: string; article: string } => {
         if (name.startsWith('The ')) {
@@ -245,9 +354,10 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
             `A quick fact about ${topicName}.`,
           ];
       const intro = introVariations[Math.floor(Math.random() * introVariations.length)];
-      await speakText(intro);
-      await new Promise((r) => setTimeout(r, 250));
-      await speakText(factText);
+
+      // Use one TTS request per fact cycle to avoid browser interruption between
+      // intro and fact boundaries (common with SpeechSynthesis in some browsers).
+      await speakText(`${intro} ${factText}`);
     },
     [speakText]
   );
@@ -312,6 +422,23 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
           return;
         }
         await speakFact(fact.fact, fact.topic);
+
+        const nextPlayedCount = incrementPlayedFactsCount();
+
+        if (PAYWALL_ENABLED && paywallAfterCurrentRef.current) {
+          paywallAfterCurrentRef.current = false;
+          setDevTriggerPaywallAfterCurrentState(false);
+          openPaywallAndStopFeed();
+          isProcessingRef.current = false;
+          return;
+        }
+
+        if (PAYWALL_ENABLED && !hasPaidRef.current && nextPlayedCount >= FACT_FEED_FREE_LIMIT) {
+          openPaywallAndStopFeed();
+          isProcessingRef.current = false;
+          return;
+        }
+
         if (skipRequestedRef.current) {
           skipRequestedRef.current = false;
           isProcessingRef.current = false;
@@ -337,25 +464,30 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
         }
         await fetchRandomFact();
       } catch (e) {
+        console.error('Fact Feed playback failed, pausing feed instead of auto-skipping:', e);
         if (skipRequestedRef.current) {
           skipRequestedRef.current = false;
           isProcessingRef.current = false;
           return;
         }
+
+        // On playback errors, pause and wait for explicit resume/next rather than skipping.
         if (factFeedActiveRef.current) {
-          await new Promise((r) => setTimeout(r, 2500));
-          if (skipRequestedRef.current) {
-            skipRequestedRef.current = false;
-            isProcessingRef.current = false;
-            return;
-          }
-          if (factFeedActiveRef.current) await fetchRandomFact();
+          setPausedState(true);
+          pausedRef.current = true;
         }
       }
       isProcessingRef.current = false;
     };
     playAndContinue();
-  }, [fact, factFeedMode, fetchRandomFact, speakFact]);
+  }, [
+    fact,
+    factFeedMode,
+    fetchRandomFact,
+    incrementPlayedFactsCount,
+    openPaywallAndStopFeed,
+    speakFact,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -365,6 +497,10 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
 
   const toggleFactFeed = useCallback(() => {
     const newMode = !factFeedMode;
+    if (PAYWALL_ENABLED && newMode && !hasPaidRef.current && playedFactsCount >= FACT_FEED_FREE_LIMIT) {
+      setPaywallOpenState(true);
+      return;
+    }
     if (!newMode) {
       ttsServiceRef.current?.cancel();
       isProcessingRef.current = false;
@@ -378,13 +514,17 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
       recentlyPlayedFactsRef.current = [];
     }
     setFactFeedMode(newMode);
-  }, [factFeedMode]);
+  }, [factFeedMode, playedFactsCount]);
 
   const resume = useCallback(() => {
+    if (PAYWALL_ENABLED && !hasPaidRef.current && playedFactsCount >= FACT_FEED_FREE_LIMIT) {
+      setPaywallOpenState(true);
+      return;
+    }
     setPausedState(false);
     pausedRef.current = false;
     fetchRandomFact();
-  }, [fetchRandomFact]);
+  }, [fetchRandomFact, playedFactsCount]);
 
   const skipToNext = useCallback(() => {
     skipRequestedRef.current = true;
@@ -407,6 +547,16 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
     toggleFactFeed,
     selectorOpen,
     setSelectorOpen,
+    playedFactsCount,
+    freeFactsLimit: FACT_FEED_FREE_LIMIT,
+    paywallOpen,
+    setPaywallOpen,
+    paywallEnabled: PAYWALL_ENABLED,
+    startCheckout,
+    isCheckingOut,
+    isLocalDev,
+    devTriggerPaywallAfterCurrent,
+    setDevTriggerPaywallAfterCurrent,
     topicNames,
   };
 

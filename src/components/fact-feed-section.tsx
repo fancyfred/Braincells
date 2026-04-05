@@ -21,6 +21,16 @@ export function FactFeedSection() {
     toggleFactFeed,
     selectorOpen,
     setSelectorOpen,
+    playedFactsCount,
+    freeFactsLimit,
+    paywallOpen,
+    setPaywallOpen,
+    paywallEnabled,
+    startCheckout,
+    isCheckingOut,
+    isLocalDev,
+    devTriggerPaywallAfterCurrent,
+    setDevTriggerPaywallAfterCurrent,
     topicNames,
   } = useFactFeed();
 
@@ -34,6 +44,7 @@ export function FactFeedSection() {
     .map((slug) => topicNames[slug] ?? slug);
   const selectedTopicsPreview = selectedTopicLabels.slice(0, 5).join(', ');
   const selectedTopicsSummary = selectedTopicLabels.length > 5 ? `${selectedTopicsPreview}, ...` : selectedTopicsPreview;
+  const factsRemaining = Math.max(0, freeFactsLimit - playedFactsCount);
 
   return (
     <section className="home-section fact-feed-section" id="fact-feed" aria-labelledby="fact-feed-heading">
@@ -41,6 +52,13 @@ export function FactFeedSection() {
       <p className="home-section-desc">
         Pick topics, hit play, and listen to a continuous stream of facts. Perfect for commutes or background learning.
       </p>
+      {paywallEnabled && (
+        <p className="fact-feed-section-usage">
+          {factsRemaining > 0
+            ? `${factsRemaining} free fact${factsRemaining === 1 ? '' : 's'} remaining before paywall`
+            : 'Free limit reached. Unlock unlimited listening to continue.'}
+        </p>
+      )}
       <div className="fact-feed-section-controls">
         <button
           type="button"
@@ -122,6 +140,17 @@ export function FactFeedSection() {
           </>
         )}
       </div>
+      {paywallEnabled && isLocalDev && (
+        <label className="fact-feed-dev-trigger" htmlFor="fact-feed-dev-paywall-toggle">
+          <input
+            id="fact-feed-dev-paywall-toggle"
+            type="checkbox"
+            checked={devTriggerPaywallAfterCurrent}
+            onChange={(event) => setDevTriggerPaywallAfterCurrent(event.target.checked)}
+          />
+          <span>Dev: trigger paywall after current fact finishes</span>
+        </label>
+      )}
       {selectedTopics.size > 0 && (
         <p className="fact-feed-section-selected">
           <span className="fact-feed-section-selected-label">Playing from: </span>
@@ -177,6 +206,34 @@ export function FactFeedSection() {
         selectedTopics={selectedTopics}
         onTopicsChange={setSelectedTopics}
       />
+
+      {paywallEnabled && paywallOpen && (
+        <div className="fact-feed-paywall-overlay" role="dialog" aria-modal="true" aria-labelledby="fact-feed-paywall-title">
+          <div className="fact-feed-paywall-modal">
+            <h3 id="fact-feed-paywall-title">Keep The Fact Feed Going</h3>
+            <p>
+              You&apos;ve listened to {playedFactsCount} facts. Upgrade to continue with unlimited audio facts.
+            </p>
+            <div className="fact-feed-paywall-actions">
+              <button
+                type="button"
+                className="btn secondary"
+                onClick={() => setPaywallOpen(false)}
+              >
+                Maybe Later
+              </button>
+              <button
+                type="button"
+                className="btn primary"
+                onClick={startCheckout}
+                disabled={isCheckingOut}
+              >
+                {isCheckingOut ? 'Redirecting...' : 'Pay With Stripe'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

@@ -1,5 +1,5 @@
 // TTS Service Configuration
-export type TTSService = 'BROWSER' | 'PUTER' | 'POLLY';
+export type TTSService = 'BROWSER' | 'PUTER' | 'POLLY' | 'ELEVENLABS';
 
 // Get TTS service from environment variable, default to BROWSER
 export const TTS_SERVICE: TTSService = (process.env.NEXT_PUBLIC_TTS_SERVICE as TTSService) || 'BROWSER';

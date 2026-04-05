@@ -444,6 +444,14 @@ export const topics: Topic[] = [
     category: 'science',
   },
   {
+    slug: 'vikings',
+    title: 'Vikings Facts',
+    description: 'Fascinating facts about Vikings: longships, exploration, trade routes, Norse mythology, language, and how Scandinavian influence shaped medieval Europe.',
+    emoji: '🛡️',
+    mood: 'niche',
+    category: 'culture',
+  },
+  {
     slug: 'frequencies',
     title: 'Frequencies',
     description: 'Facts about sound, radio, light, and the electromagnetic spectrum — from hertz and human hearing to Wi‑Fi and the grid.',

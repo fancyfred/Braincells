@@ -52,6 +52,7 @@ import { composersFacts } from '@/data/composers';
 import { oilFacts } from '@/data/oil';
 import { area51Facts } from '@/data/area-51';
 import { jupitersMoonsFacts } from '@/data/jupiters-moons';
+import { vikingsFacts } from '@/data/vikings';
 import { frequenciesFacts } from '@/data/frequencies';
 import { semiconductorsFacts } from '@/data/semiconductors';
 import { papacyFacts } from '@/data/papacy';
@@ -118,6 +119,7 @@ export const topicData: Record<string, { facts: Fact[]; title: string; descripti
   oil: { facts: oilFacts, title: 'Oil Facts', description: topics.find(t => t.slug === 'oil')?.description || '' },
   'area-51': { facts: area51Facts, title: 'Area 51 Facts', description: topics.find(t => t.slug === 'area-51')?.description || '' },
   'jupiters-moons': { facts: jupitersMoonsFacts, title: 'Jupiter\'s Moons Facts', description: topics.find(t => t.slug === 'jupiters-moons')?.description || '' },
+  vikings: { facts: vikingsFacts, title: 'Vikings Facts', description: topics.find(t => t.slug === 'vikings')?.description || '' },
   frequencies: { facts: frequenciesFacts, title: 'Frequencies', description: topics.find(t => t.slug === 'frequencies')?.description || '' },
   semiconductors: { facts: semiconductorsFacts, title: 'Semiconductors', description: topics.find(t => t.slug === 'semiconductors')?.description || '' },
   papacy: { facts: papacyFacts, title: 'The Papacy', description: topics.find(t => t.slug === 'papacy')?.description || '' },

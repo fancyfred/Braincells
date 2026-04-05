@@ -237,6 +237,140 @@ class PollyTTSService implements TTSService {
   }
 }
 
+class ElevenLabsTTSService implements TTSService {
+  private currentAudio: HTMLAudioElement | null = null;
+
+  async speak(text: string): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log('[ElevenLabsTTS] Synthesizing speech...');
+
+        const response = await fetch('/api/tts/elevenlabs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('[ElevenLabsTTS] Got audio data, voice:', data.voice);
+
+        const audio = new Audio(data.url);
+        this.currentAudio = audio;
+        audio.preload = 'auto';
+
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
+            artist: 'The Fact Feed',
+            album: 'Fact Feed',
+          });
+
+          navigator.mediaSession.setActionHandler('play', async () => {
+            if (audio.paused) {
+              try {
+                await audio.play();
+              } catch (e) {
+                console.error('[ElevenLabsTTS] Failed to resume audio:', e);
+              }
+            }
+          });
+
+          navigator.mediaSession.setActionHandler('pause', () => {
+            console.log('[ElevenLabsTTS] Pause requested but ignored for continuous playback');
+          });
+        }
+
+        audio.onloadstart = () => console.log('[ElevenLabsTTS] Audio loading started');
+        audio.oncanplay = () => console.log('[ElevenLabsTTS] Audio can play');
+        audio.onplay = () => console.log('[ElevenLabsTTS] Audio playing');
+
+        audio.onpause = () => {
+          console.log('[ElevenLabsTTS] Audio paused unexpectedly');
+          if (document.visibilityState === 'hidden' || document.hidden) {
+            setTimeout(async () => {
+              if (audio.paused && this.currentAudio === audio) {
+                try {
+                  await audio.play();
+                  console.log('[ElevenLabsTTS] Audio resumed after unexpected pause');
+                } catch (e) {
+                  console.error('[ElevenLabsTTS] Failed to resume after pause:', e);
+                }
+              }
+            }, 100);
+          }
+        };
+
+        const handleVisibilityChange = async () => {
+          if (document.visibilityState === 'hidden' && audio.paused && this.currentAudio === audio) {
+            try {
+              await audio.play();
+              console.log('[ElevenLabsTTS] Audio resumed after visibility change');
+            } catch (e) {
+              console.error('[ElevenLabsTTS] Failed to resume after visibility change:', e);
+            }
+          }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        audio.onended = () => {
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+          this.currentAudio = null;
+          resolve();
+        };
+
+        audio.onerror = () => {
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+          this.currentAudio = null;
+          reject(new Error(`Audio playback failed: ${audio.error?.message || 'Unknown error'}`));
+        };
+
+        try {
+          await audio.play();
+
+          const keepAliveInterval = setInterval(() => {
+            if (this.currentAudio === audio && audio.paused && !audio.ended) {
+              console.log('[ElevenLabsTTS] Audio paused, attempting to resume...');
+              audio.play().catch((e) => {
+                console.error('[ElevenLabsTTS] Failed to resume in keep-alive:', e);
+                clearInterval(keepAliveInterval);
+              });
+            } else if (audio.ended || this.currentAudio !== audio) {
+              clearInterval(keepAliveInterval);
+            }
+          }, 2000);
+
+          audio.addEventListener('ended', () => clearInterval(keepAliveInterval), { once: true });
+        } catch (playError: any) {
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+          if (playError.name === 'NotAllowedError') {
+            reject(new Error('Audio autoplay was blocked. Please interact with the page first.'));
+          } else {
+            reject(playError);
+          }
+        }
+      } catch (error) {
+        console.error('[ElevenLabsTTS] Error in speak():', error);
+        reject(error);
+      }
+    });
+  }
+
+  cancel(): void {
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio.currentTime = 0;
+      this.currentAudio = null;
+    }
+  }
+}
+
 class PuterTTSService implements TTSService {
   private currentAudio: HTMLAudioElement | null = null;
   private puterReady: Promise<void>;
@@ -469,6 +603,11 @@ export function getTTSService(): TTSService {
   if (service === 'POLLY') {
     console.log('[TTS] Initializing AWS Polly TTS service');
     return new PollyTTSService();
+  }
+
+  if (service === 'ELEVENLABS') {
+    console.log('[TTS] Initializing ElevenLabs TTS service');
+    return new ElevenLabsTTSService();
   }
 
   // Explicitly handle BROWSER service or default to Browser TTS for any other value
