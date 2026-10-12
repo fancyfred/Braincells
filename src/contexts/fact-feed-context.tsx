@@ -24,6 +24,7 @@ export interface FactData {
 }
 
 const topicNames: Record<string, string> = {
+  'ice-cream': 'Ice Cream',
   braincells: 'The Brain',
   coffee: 'Coffee',
   'greek-mythology': 'Greek Mythology',
@@ -83,11 +84,14 @@ const topicNames: Record<string, string> = {
   papacy: 'The Papacy',
   'roman-emperors': 'Roman Emperors',
   crypto: 'Crypto and Bitcoin',
+  wwi: 'World War I',
+  wwii: 'World War II',
 };
 
 const FACT_FEED_FREE_LIMIT = 100;
 const FACT_FEED_COUNT_KEY = 'fact-feed-played-count';
 const FACT_FEED_PAID_KEY = 'fact-feed-paid';
+const FACT_FEED_DEV_IGNORE_LIMIT_KEY = 'fact-feed-dev-ignore-limit';
 const PAYWALL_ENABLED = process.env.NEXT_PUBLIC_PAYWALL_ENABLED === 'true';
 
 interface FactFeedContextValue {
@@ -114,6 +118,8 @@ interface FactFeedContextValue {
   isLocalDev: boolean;
   devTriggerPaywallAfterCurrent: boolean;
   setDevTriggerPaywallAfterCurrent: (enabled: boolean) => void;
+  devIgnoreLimit: boolean;
+  setDevIgnoreLimit: (enabled: boolean) => void;
   topicNames: Record<string, string>;
 }
 
@@ -131,6 +137,7 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isLocalDev, setIsLocalDev] = useState(false);
   const [devTriggerPaywallAfterCurrent, setDevTriggerPaywallAfterCurrentState] = useState(false);
+  const [devIgnoreLimit, setDevIgnoreLimitState] = useState(false);
   const [selectedTopics, setSelectedTopicsState] = useState<Set<string>>(new Set());
   const ttsServiceRef = useRef<TTSService | null>(null);
   const isProcessingRef = useRef(false);
@@ -139,6 +146,7 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
   const skipRequestedRef = useRef(false);
   const hasPaidRef = useRef(false);
   const paywallAfterCurrentRef = useRef(false);
+  const devIgnoreLimitRef = useRef(false);
   const previousTopicRef = useRef<string | null>(null);
   const recentlyPlayedFactsRef = useRef<string[]>([]);
 
@@ -166,6 +174,18 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
     setDevTriggerPaywallAfterCurrentState(enabled);
     paywallAfterCurrentRef.current = enabled;
   }, []);
+
+  const setDevIgnoreLimit = useCallback((enabled: boolean) => {
+    const shouldEnable = isLocalDev && enabled;
+    setDevIgnoreLimitState(shouldEnable);
+    devIgnoreLimitRef.current = shouldEnable;
+
+    if (shouldEnable) {
+      localStorage.setItem(FACT_FEED_DEV_IGNORE_LIMIT_KEY, '1');
+    } else {
+      localStorage.removeItem(FACT_FEED_DEV_IGNORE_LIMIT_KEY);
+    }
+  }, [isLocalDev]);
 
   const incrementPlayedFactsCount = useCallback((): number => {
     let nextCount = 0;
@@ -215,7 +235,18 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    setIsLocalDev(window.location.hostname === 'localhost');
+    const localDev = window.location.hostname === 'localhost';
+    setIsLocalDev(localDev);
+
+    if (localDev) {
+      const savedDevIgnore = localStorage.getItem(FACT_FEED_DEV_IGNORE_LIMIT_KEY) === '1';
+      setDevIgnoreLimitState(savedDevIgnore);
+      devIgnoreLimitRef.current = savedDevIgnore;
+    } else {
+      setDevIgnoreLimitState(false);
+      devIgnoreLimitRef.current = false;
+      localStorage.removeItem(FACT_FEED_DEV_IGNORE_LIMIT_KEY);
+    }
 
     const savedCount = parseInt(localStorage.getItem(FACT_FEED_COUNT_KEY) || '0', 10);
     if (!Number.isNaN(savedCount) && savedCount > 0) {
@@ -433,7 +464,7 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
           return;
         }
 
-        if (PAYWALL_ENABLED && !hasPaidRef.current && nextPlayedCount >= FACT_FEED_FREE_LIMIT) {
+        if (PAYWALL_ENABLED && !devIgnoreLimitRef.current && !hasPaidRef.current && nextPlayedCount >= FACT_FEED_FREE_LIMIT) {
           openPaywallAndStopFeed();
           isProcessingRef.current = false;
           return;
@@ -497,7 +528,7 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
 
   const toggleFactFeed = useCallback(() => {
     const newMode = !factFeedMode;
-    if (PAYWALL_ENABLED && newMode && !hasPaidRef.current && playedFactsCount >= FACT_FEED_FREE_LIMIT) {
+    if (PAYWALL_ENABLED && !devIgnoreLimitRef.current && newMode && !hasPaidRef.current && playedFactsCount >= FACT_FEED_FREE_LIMIT) {
       setPaywallOpenState(true);
       return;
     }
@@ -517,7 +548,7 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
   }, [factFeedMode, playedFactsCount]);
 
   const resume = useCallback(() => {
-    if (PAYWALL_ENABLED && !hasPaidRef.current && playedFactsCount >= FACT_FEED_FREE_LIMIT) {
+    if (PAYWALL_ENABLED && !devIgnoreLimitRef.current && !hasPaidRef.current && playedFactsCount >= FACT_FEED_FREE_LIMIT) {
       setPaywallOpenState(true);
       return;
     }
@@ -557,6 +588,8 @@ export function FactFeedProvider({ children }: { children: ReactNode }) {
     isLocalDev,
     devTriggerPaywallAfterCurrent,
     setDevTriggerPaywallAfterCurrent,
+    devIgnoreLimit,
+    setDevIgnoreLimit,
     topicNames,
   };
 

@@ -31,6 +31,8 @@ export function FactFeedSection() {
     isLocalDev,
     devTriggerPaywallAfterCurrent,
     setDevTriggerPaywallAfterCurrent,
+    devIgnoreLimit,
+    setDevIgnoreLimit,
     topicNames,
   } = useFactFeed();
 
@@ -54,7 +56,9 @@ export function FactFeedSection() {
       </p>
       {paywallEnabled && (
         <p className="fact-feed-section-usage">
-          {factsRemaining > 0
+          {isLocalDev && devIgnoreLimit
+            ? 'Dev override active: 100-fact free limit is currently ignored.'
+            : factsRemaining > 0
             ? `${factsRemaining} free fact${factsRemaining === 1 ? '' : 's'} remaining before paywall`
             : 'Free limit reached. Unlock unlimited listening to continue.'}
         </p>
@@ -141,15 +145,26 @@ export function FactFeedSection() {
         )}
       </div>
       {paywallEnabled && isLocalDev && (
-        <label className="fact-feed-dev-trigger" htmlFor="fact-feed-dev-paywall-toggle">
-          <input
-            id="fact-feed-dev-paywall-toggle"
-            type="checkbox"
-            checked={devTriggerPaywallAfterCurrent}
-            onChange={(event) => setDevTriggerPaywallAfterCurrent(event.target.checked)}
-          />
-          <span>Dev: trigger paywall after current fact finishes</span>
-        </label>
+        <>
+          <label className="fact-feed-dev-trigger" htmlFor="fact-feed-dev-ignore-limit-toggle">
+            <input
+              id="fact-feed-dev-ignore-limit-toggle"
+              type="checkbox"
+              checked={devIgnoreLimit}
+              onChange={(event) => setDevIgnoreLimit(event.target.checked)}
+            />
+            <span>Dev: ignore 100-fact paywall limit</span>
+          </label>
+          <label className="fact-feed-dev-trigger" htmlFor="fact-feed-dev-paywall-toggle">
+            <input
+              id="fact-feed-dev-paywall-toggle"
+              type="checkbox"
+              checked={devTriggerPaywallAfterCurrent}
+              onChange={(event) => setDevTriggerPaywallAfterCurrent(event.target.checked)}
+            />
+            <span>Dev: trigger paywall after current fact finishes</span>
+          </label>
+        </>
       )}
       {selectedTopics.size > 0 && (
         <p className="fact-feed-section-selected">

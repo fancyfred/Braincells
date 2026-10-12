@@ -58,6 +58,8 @@ import { semiconductorsFacts } from '@/data/semiconductors';
 import { papacyFacts } from '@/data/papacy';
 import { romanEmperorsFacts } from '@/data/roman-emperors';
 import { cryptoFacts } from '@/data/crypto';
+import { wwiFacts } from '@/data/wwi';
+import { wwiiFacts } from '@/data/wwii';
 import { Fact, getFactArea } from '@/types/fact';
 import { topics } from '@/config/topics';
 
@@ -127,6 +129,8 @@ const allFactsWithTopics: FactWithTopic[] = [
   ...papacyFacts.map(f => ({ fact: f, topic: 'papacy' })),
   ...romanEmperorsFacts.map(f => ({ fact: f, topic: 'roman-emperors' })),
   ...cryptoFacts.map(f => ({ fact: f, topic: 'crypto' })),
+  ...wwiFacts.map(f => ({ fact: f, topic: 'wwi' })),
+  ...wwiiFacts.map(f => ({ fact: f, topic: 'wwii' })),
 ];
 
 export async function GET(request: Request) {
